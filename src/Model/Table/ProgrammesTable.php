@@ -5,15 +5,17 @@ use Cake\ORM\Table;
 
 
 
-class CentresTable extends Table
+class ProgrammesTable extends Table
 {
     public function initialize(array $config)
     {
         parent::initialize($config);
 
-        $this->setTable('centres');
+        $this->setTable('programmes');
         $this->setPrimaryKey('id');
         
         $this->belongsTo('Centres');
+        
+        $this->hasMany('Seats');
     }
 }

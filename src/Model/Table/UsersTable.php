@@ -3,9 +3,6 @@
 namespace App\Model\Table;
 
 use Cake\Validation\Validator;
-use Cake\Auth\DigestAuthenticate;
-use Cake\Auth\DefaultPasswordHasher;
-use Cake\Event\Event;
 use Cake\ORM\Table;
 
 class UsersTable extends Table

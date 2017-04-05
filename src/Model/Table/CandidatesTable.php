@@ -1,8 +1,19 @@
 <?php
+namespace App\Model\Table;
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use Cake\ORM\Table;
 
+class CandidatesTable extends Table
+{
+
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+
+        $this->setTable('candidates');
+        $this->setPrimaryKey('id');
+        
+        
+        $this->hasOne('Seats');
+    }
+}

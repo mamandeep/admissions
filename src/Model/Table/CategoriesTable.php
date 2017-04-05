@@ -40,5 +40,8 @@ class CategoriesTable extends Table
         $this->setTable('categories');
         $this->setPrimaryKey('id');
         
+        $this->hasMany('Seats');
+        
+        
     }
 }
