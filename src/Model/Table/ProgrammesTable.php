@@ -17,5 +17,7 @@ class ProgrammesTable extends Table
         $this->belongsTo('Centres');
         
         $this->hasMany('Seats');
+        
+        $this->addBehavior('Timestamp');
     }
 }

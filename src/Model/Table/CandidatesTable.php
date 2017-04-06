@@ -15,5 +15,7 @@ class CandidatesTable extends Table
         
         
         $this->hasOne('Seats');
+        
+        $this->addBehavior('Timestamp');
     }
 }

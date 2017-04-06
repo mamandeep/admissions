@@ -24,7 +24,9 @@ class SeatsController extends AppController {
     }
 
     public function index() {
-        $this->set('seats', $this->Seats->find('all'));
+        $seats = $this->Seats->find('all', ['contain' => ['Programmes' , 'Categories']]);
+        $this->set('seats', $seats);
+        //debug($seats->toArray()); return null;
     }
 
     public function view($id) {
@@ -53,53 +55,53 @@ class SeatsController extends AppController {
         if ($this->request->is('post')) {
             $seat = $this->Seats->patchEntity($seat, $this->request->getData());
             // Added this line
-            $article->user_id = $this->Auth->user('id');
+            $seat->user_id = $this->Auth->user('id');
             // You could also do the following
             //$newData = ['user_id' => $this->Auth->user('id')];
             //$article = $this->Articles->patchEntity($article, $newData);
-            if ($this->Articles->save($article)) {
-                $this->Flash->success(__('Your article has been saved.'));
+            if ($this->Seats->save($seat)) {
+                $this->Flash->success(__('Your seat has been saved.'));
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('Unable to add your article.'));
+            $this->Flash->error(__('Unable to add your seat.'));
         }
-        $this->set('article', $article);
-
-        // Just added the categories list to be able to choose
-        // one category for an article
-        $categories = $this->Articles->Categories->find('treeList');
-        $this->set(compact('categories'));
+        $this->set('seat', $seat);
+        $programmes = $this->Seats->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name')));                               
+        $this->set('programmes', $programmes);
+        $categories = $this->Seats->Categories->find('list', array('fields' =>array('Categories.id','Categories.type'),
+                                                                   'keyField' => 'id',
+                                                                   'valueField' => 'type'));
+        //debug($categories->toArray()); return false;
+        $this->set('categories', $categories);
     }
 
     public function edit($id = null) {
-        $bookmark = $this->Bookmarks->get($id, [
-        'contain' => ['Tags']
-    ]);
-    if ($this->request->is(['patch', 'post', 'put'])) {
-        $bookmark = $this->Bookmarks->patchEntity($bookmark, $this->request->getData());
-        $bookmark->user_id = $this->Auth->user('id');
-        if ($this->Bookmarks->save($bookmark)) {
-            $this->Flash->success('The bookmark has been saved.');
-            return $this->redirect(['action' => 'index']);
+        $seat = $this->Seats->get($id);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $seat = $this->Bookmarks->patchEntity($seat, $this->request->getData());
+            $seat->user_id = $this->Auth->user('id');
+            if ($this->Seats->save($seat)) {
+                $this->Flash->success('The seat has been saved.');
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error('The seat could not be saved. Please, try again.');
         }
-        $this->Flash->error('The bookmark could not be saved. Please, try again.');
-    }
-    $tags = $this->Bookmarks->Tags->find('list');
-    $this->set(compact('bookmark', 'tags'));
+        $seats = $this->Seats->find('list');
+        $this->set(compact('seats'));
     }
 
     public function delete($id) {
         $this->request->allowMethod(['post', 'delete']);
 
-        $article = $this->Articles->get($id);
-        if ($this->Articles->delete($article)) {
-            $this->Flash->success(__('The article with id: {0} has been deleted.', h($id)));
+        $seat = $this->Seats->get($id);
+        if ($this->Seats->delete($seat)) {
+            $this->Flash->success(__('The seat with id: {0} has been deleted.', h($id)));
             return $this->redirect(['action' => 'index']);
         }
     }
 
     public function isAuthorized($user = null) {
-        // All registered users can add articles
+        // All registered users can add seats
         if ($this->request->getParam('action') === 'add') {
             return true;
         }

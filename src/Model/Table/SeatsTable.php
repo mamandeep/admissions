@@ -18,8 +18,8 @@ class SeatsTable extends Table
         
         $this->belongsTo('Programmes');
         $this->belongsTo('Categories');
-        $this->belongsTo('Candidates');
+        $this->hasOne('Candidates');
         
-        $this->hasMany('Programmes');
+        $this->addBehavior('Timestamp');
     }
 }
