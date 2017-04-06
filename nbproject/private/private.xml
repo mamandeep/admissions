@@ -15,14 +15,19 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Article.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Centre.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ProgrammesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/config/app.default.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CategoriesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/ArticlesController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/index.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Category.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SeatsTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/SeatsController.php</file>

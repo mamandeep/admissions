@@ -22,6 +22,8 @@ class SchoolsTable extends Table
         $this->setPrimaryKey('id');
         
         $this->hasMany('Centres');
+        
+        $this->addBehavior('Timestamp');
     }
 }
 
