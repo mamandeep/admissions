@@ -25,7 +25,10 @@
             <?= $seat->seat_no ?>
         </td>
         <td>
-            <?= $seat->created->format(DATE_RFC850) ?>
+            <?php $dt = new DateTime($seat->created->format('Y-m-d H:i:s'), new DateTimeZone('UTC'));
+                  $dt->setTimezone(new DateTimeZone('Asia/Kolkata'));
+                  echo $dt->format('l, d-M-y H:i:s T');
+            ?>
         </td>
         <td>
             <?= $this->Form->postLink(

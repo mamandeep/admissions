@@ -17,12 +17,6 @@ class ArticlesController extends AppController {
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        if (!$this->Auth->user()) {
-            $this->Auth->config('authError', false);
-        }
-        else {
-            $this->Auth->config('authError', "Woopsie, you are not authorized to access this area.");
-        }
     }
 
     public function index() {

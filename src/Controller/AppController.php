@@ -57,7 +57,7 @@ class AppController extends Controller
             'storage' => 'Session',
             'authorize' => ['Controller'],
             'loginRedirect' => [
-                'controller' => 'Articles',
+                'controller' => 'seats',
                 'action' => 'index'
             ],
             /*'logoutRedirect' => [
@@ -65,10 +65,12 @@ class AppController extends Controller
                 'action' => 'display',
                 'home'*/
             'logoutRedirect' => [
-                'controller' => 'Articles',
-                'action' => 'index',
+                'controller' => 'users',
+                'action' => 'login',
                 'home'
-            ]
+            ],
+            'authError' => 'You must be logged in to view this page.',
+            'loginError' => 'Invalid Username or Password entered, please try again.'
         ]);
         /*
          * Enable the following components for recommended CakePHP security settings.
@@ -95,7 +97,7 @@ class AppController extends Controller
 	
 	public function beforeFilter(Event $event)
     {
-        $this->Auth->allow(['index', 'view', 'display', 'sendemail']);
+        $this->Auth->allow(['login']);
     }
     
     public function isAuthorized($user = null)

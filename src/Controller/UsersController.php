@@ -8,10 +8,22 @@ use Cake\Event\Event;
 class UsersController extends AppController
 {
 
+    public $paginate = array(
+        'limit' => 1,
+        'conditions' => array('status' => '1'),
+        'order' => array('Users.username' => 'asc' ) 
+    );
+    
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Paginator');
+    }
+    
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        $this->Auth->allow(['add', 'logout']);
+        $this->Auth->allow(['add', 'login']);
         $this->Auth->config('authenticate', [
             'Basic' => ['userModel' => 'Users'],
             'Form' => ['userModel' => 'Users']
@@ -20,7 +32,10 @@ class UsersController extends AppController
 
     public function index()
     {
-        $this->set('users', $this->Users->find('all'));
+        //$this->set('users', $this->Users->find('all'));
+        //$query = $this->Users->find('all')->where(['author_id' => 1]);
+        //$this->set('users', $this->paginate($query));
+        $this->set('users', $this->paginate());
     }
 
     public function view($id)
