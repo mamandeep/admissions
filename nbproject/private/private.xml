@@ -9,6 +9,8 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/UsersTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CentresTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Seat.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/RegistrationsTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/login.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ArticlesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Programme.php</file>
@@ -16,10 +18,12 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Centre.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Registrations/add.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/View/AppView.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ProgrammesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/config/paginator-templates.php</file>
             <file>file:/C:/xampp/htdocs/admissions/config/app.default.php</file>
@@ -27,10 +31,10 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/ArticlesController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/index.php</file>
             <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Category.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/Auth/DefaultPasswordHasher.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SeatsTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/SeatsController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/School.php</file>
