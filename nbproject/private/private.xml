@@ -16,10 +16,12 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Centre.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/View/AppView.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ProgrammesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/config/paginator-templates.php</file>
             <file>file:/C:/xampp/htdocs/admissions/config/app.default.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CategoriesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/index.ctp</file>

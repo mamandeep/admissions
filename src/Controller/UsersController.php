@@ -9,7 +9,7 @@ class UsersController extends AppController
 {
 
     public $paginate = array(
-        'limit' => 1,
+        'limit' => 10,
         'conditions' => array('status' => '1'),
         'order' => array('Users.username' => 'asc' ) 
     );
@@ -68,7 +68,7 @@ class UsersController extends AppController
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
-                return $this->redirect($this->Auth->redirectUrl());
+                return $this->checkAndRedirect($user);
             }
             $this->Flash->error(__('Invalid username or password, try again'));
         }
@@ -80,5 +80,64 @@ class UsersController extends AppController
     {
         return $this->redirect($this->Auth->logout());
     }
+    
+    private function checkAndRedirect(User $user) {
+        if (isset($user['role']) && $user['role'] === 'student') {
+            return $this->redirect([
+                        'controller' => 'articles',
+                        'action' => 'index'
+                    ]);
+        }
+        return $this->redirect($this->Auth->redirectUrl());
+                    
+    }
+    
+    public function activate($id = null) {
+        $user = "";
+        if(intval(trim($id)) > 0)
+            $user = $this->Users->get($id);
+        else
+            return false;
+        $user = $this->Users->patchEntity($user, ['status' => 0]);
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                //$this->Auth->setUser($user->toArray());
+                $this->Flash->success(__('The user has been saved.'));
+                return $this->redirect([
+                    'controller' => 'articles',
+                    'action' => 'index'
+                ]);
+            }
+            $this->Flash->error(__('Unable to add the user.'));
+        }
+        $this->set('user', $user);
+    }
+    
+    public function deactivate($id = null) {
+        $user = $this->Users->newEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            if ($this->Users->save($user)) {
+                //$this->Auth->setUser($user->toArray());
+                $this->Flash->success(__('The user has been saved.'));
+                return $this->redirect([
+                    'controller' => 'articles',
+                    'action' => 'index'
+                ]);
+            }
+            $this->Flash->error(__('Unable to add the user.'));
+        }
+        $this->set('user', $user);
+    }
 
+    public function isAuthorized($user = null) {
+        // All users with role as 'exam' can add seats
+        if ($this->request->getParam('action') === 'login' || $this->request->getParam('action') === 'logout') {
+            return true;
+        }
+
+        return parent::isAuthorized($user);
+    }
+    
 }

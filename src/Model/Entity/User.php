@@ -14,22 +14,9 @@ class User extends Entity
         'id' => false
     ];
     
-    public $validate = array(
-     'email'=>'email',
-     'password' => array(
-        'required' => array(
-            'rule' => array('notEmpty'),
-            'message' => 'A password is required'
-        )
-     ));
-
-    // ...
-    
     protected function _setPassword($password)
     {
         return (new DefaultPasswordHasher())->hash($password);
         //return $passwordHasher->hash($password);
     }
-
-    // ...
 }

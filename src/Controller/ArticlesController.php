@@ -95,7 +95,7 @@ class ArticlesController extends AppController {
   public function isAuthorized($user = null)
 {
     // All registered users can add articles
-    if ($this->request->getParam('action') === 'add') {
+    if ($this->request->getParam('action') === 'add' || $this->request->getParam('action') === 'index') {
         return true;
     }
 

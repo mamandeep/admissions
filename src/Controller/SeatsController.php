@@ -16,11 +16,6 @@ class SeatsController extends AppController {
 
     public function beforeFilter(Event $event) {
         parent::beforeFilter($event);
-        if (!$this->Auth->user()) {
-            $this->Auth->config('authError', false);
-        } else {
-            $this->Auth->config('authError', "Woopsie, you are not authorized to access this area.");
-        }
     }
 
     public function index() {
@@ -101,15 +96,15 @@ class SeatsController extends AppController {
     }
 
     public function isAuthorized($user = null) {
-        // All registered users can add seats
-        if ($this->request->getParam('action') === 'add') {
+        // All users with role as 'exam' can add seats
+        if (isset($user['role']) && $user['role'] === 'exam' && $this->request->getParam('action') === 'add') {
             return true;
         }
 
         // The owner of an article can edit and delete it
         if (in_array($this->request->getParam('action'), ['edit', 'delete'])) {
-            $articleId = (int) $this->request->getParam('pass.0');
-            if ($this->Articles->isOwnedBy($articleId, $user['id'])) {
+            $seatId = (int) $this->request->getParam('pass.0');
+            if ($this->Seats->isOwnedBy($seatId, $user['id'])) {
                 return true;
             }
         }

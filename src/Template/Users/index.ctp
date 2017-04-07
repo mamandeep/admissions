@@ -1,9 +1,20 @@
+<script>
+    function CheckAll(e) {
+        var allCheckBoxes = document.getElementsByName("checklist[]");
+        for (var i = 0; i < allCheckBoxes.length; i++) {
+           if(allCheckBoxes[i].checked) 
+                allCheckBoxes[i].checked = false;
+            else
+                allCheckBoxes[i].checked = true;
+        }
+    }
+</script>    
 <div class="users form">
 <h1>Users</h1>
 <table>
     <thead>
         <tr>
-            <th><?php echo $this->Form->checkbox('all', array('name' => 'CheckAll',  'id' => 'CheckAll')); ?></th>
+            <th><?php echo $this->Form->checkbox('toggleall', array('onClick' => 'CheckAll(this)')); ?></th>
             <th><?php echo $this->Paginator->sort('username', 'Username');?>  </th>
             <th><?php echo $this->Paginator->sort('email', 'E-Mail');?></th>
             <th><?php echo $this->Paginator->sort('created', 'Created');?></th>
@@ -19,7 +30,7 @@
         <?php $count ++;?>
         <?php if($count % 2): echo '<tr>'; else: echo '<tr class="zebra">' ?>
         <?php endif; ?>
-            <td><?php echo $this->Form->checkbox('Users.id.'.$user->id); ?></td>
+            <td><?php echo $this->Form->checkbox('checklist.', array('value' => $user->id)); ?></td>
             <td><?php echo $this->Html->link( $user->username  ,   array('action'=>'edit', $user->id),array('escape' => false) );?></td>
             <td style="text-align: center;"><?php echo $user->email; ?></td>
             <td style="text-align: center;"><?php echo $this->Time->nice($user->created); ?></td>
@@ -40,9 +51,9 @@
         <?php unset($user); ?>
     </tbody>
 </table>
-<?php echo $this->Paginator->prev('<< ' . __('previous', true), array(), null, array('class'=>'disabled'));?>
-<?php echo $this->Paginator->numbers(array(   'class' => 'numbers'     ));?>
-<?php echo $this->Paginator->next(__('next', true) . ' >>', array(), null, array('class' => 'disabled'));?>
+<?php echo $this->Paginator->prev(' << ' . __('previous'));?>
+<?php echo $this->Paginator->numbers();?>
+<?php echo $this->Paginator->next(__('next') . ' >>');?>
 </div>                
 <?php echo $this->Html->link( "Add A New User.",   array('action'=>'add'),array('escape' => false) ); ?>
 <br/>

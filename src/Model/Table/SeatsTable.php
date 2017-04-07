@@ -22,4 +22,9 @@ class SeatsTable extends Table
         
         $this->addBehavior('Timestamp');
     }
+    
+    public function isOwnedBy($seatId, $userId)
+    {
+        return $this->exists(['id' => $seatId, 'user_id' => $userId]);
+    }
 }

@@ -49,8 +49,7 @@ class AppController extends Controller
                 'Form' => [
                     'fields' => ['username' => 'username', 'password' => 'password'],
                     'passwordHasher' => array(
-                        'className' => 'Default',
-                        'hashType' => 'sha256'
+                        'className' => 'Default'
                     )
                 ]
             ],
@@ -69,7 +68,7 @@ class AppController extends Controller
                 'action' => 'login',
                 'home'
             ],
-            'authError' => 'You must be logged in to view this page.',
+            'authError' => 'You must be authorized to view this page.',
             'loginError' => 'Invalid Username or Password entered, please try again.'
         ]);
         /*
@@ -96,23 +95,18 @@ class AppController extends Controller
     }
 	
 	public function beforeFilter(Event $event)
-    {
-        $this->Auth->allow(['login']);
-    }
+        {
+            //$this->Auth->allow(['login']);
+        }
     
-    public function isAuthorized($user = null)
-    {
-        // Any registered user can access public functions
-        if (!$this->request->getParam('prefix')) {
-            return true;
-        }
+        public function isAuthorized($user)
+        {
+            // Admin can access every action
+            if (isset($user['role']) && $user['role'] === 'admin') {
+                return true;
+            }
 
-        // Only admins can access admin functions
-        if ($this->request->getParam('prefix') === 'admin') {
-            return (bool)($user['role'] === 'admin');
+            // Default deny
+            return false;
         }
-
-        // Default deny
-        return false;
-    }
 }
