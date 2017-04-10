@@ -1,6 +1,5 @@
-<h1>List of Seats</h1>
-<p><?= $this->Html->link('Add Seat', ['action' => 'add']) ?></p>
-<p><?= $this->Html->link('Go to Centre', ['action' => 'centre', $centreId]) ?></p>
+<h1>List of Seats of Centre</h1>
+<p><?= $this->Html->link('Go to Centre', ['action' => 'centre']) ?></p>
 <table>
     <tr>
         <th>Id</th>

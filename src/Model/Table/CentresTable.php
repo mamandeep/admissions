@@ -18,6 +18,7 @@ class CentresTable extends Table
         $this->belongsTo('Schools');
         
         $this->hasMany('Programmes');
+        $this->hasOne('Cocs');
         
         $this->addBehavior('Timestamp');
     }

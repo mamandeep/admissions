@@ -89,7 +89,7 @@ class CandidatesController extends AppController {
 
     public function isAuthorized($user = null) {
         // All users with role as 'exam' can add seats
-        if (isset($user['role']) && $user['role'] === 'exam' && $this->request->getParam('action') === 'add') {
+        if ($this->request->getParam('action') === 'add' || $this->request->getParam('action') === 'index') {
             return true;
         }
 

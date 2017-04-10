@@ -53,8 +53,8 @@ class UsersController extends AppController
                 //$this->Auth->setUser($user->toArray());
                 $this->Flash->success(__('The user has been saved.'));
                 return $this->redirect([
-                    'controller' => 'articles',
-                    'action' => 'index'
+                    'controller' => 'users',
+                    'action' => 'login'
                 ]);
             }
             $this->Flash->error(__('Unable to add the user.'));
@@ -84,7 +84,7 @@ class UsersController extends AppController
     private function checkAndRedirect(User $user) {
         if (isset($user['role']) && $user['role'] === 'student') {
             return $this->redirect([
-                        'controller' => 'articles',
+                        'controller' => 'candidates',
                         'action' => 'index'
                     ]);
         }

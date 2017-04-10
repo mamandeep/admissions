@@ -21,7 +21,17 @@ class SeatsController extends AppController {
     public function index() {
         $seats = $this->Seats->find('all', ['contain' => ['Programmes' , 'Categories']]);
         $this->set('seats', $seats);
-        //debug($seats->toArray()); return null;
+        $cocs = \Cake\ORM\TableRegistry::get('Cocs');
+        $query = $cocs->find('list', ['condition' => ['user_id' => $this->Auth->user('id'),
+                                                     'fields'  =>  array('Cocs.id')]]);
+        $id = array_keys($query->toArray())[0];
+        /*$seats = $this->Seats
+            ->find()
+            ->contain('Programmes', function(\Cake\ORM\Query $q) {
+                return $q->where(['Programmes.centre_id' => $id]);
+        })->matching()*/
+        
+        $this->set('centreId', $id);
     }
 
     public function view($id) {
@@ -95,9 +105,26 @@ class SeatsController extends AppController {
         }
     }
 
+    public function centre($id = null) {
+        if(!(is_string($id) && ($id = intval(trim($id))))) {
+            return false;
+        }
+        $seats = $this->Seats
+            ->find()
+            ->contain(['Programmes', 'Categories'])
+            ->matching('Programmes', function(\Cake\ORM\Query $q) use ($id) {
+                return $q->where(['Programmes.centre_id' => $id]);
+            });
+        $this->set(compact('seats'));
+    }
+    
     public function isAuthorized($user = null) {
+        if ($this->request->getParam('action') === 'index') {
+            return true;
+        }
         // All users with role as 'exam' can add seats
-        if (isset($user['role']) && $user['role'] === 'exam' && $this->request->getParam('action') === 'add') {
+        if (isset($user['role']) && $user['role'] === 'exam' && ($this->request->getParam('action') === 'add' 
+                || $this->request->getParam('action') === 'centre')) {
             return true;
         }
 
@@ -111,5 +138,4 @@ class SeatsController extends AppController {
 
         return parent::isAuthorized($user);
     }
-
 }
