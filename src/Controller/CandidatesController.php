@@ -47,6 +47,11 @@ class CandidatesController extends AppController {
 
     public function add() {
         $candidate = $this->Candidates->newEntity();
+        $exisiingcandidate = $this->Candidates->find('all', ['condition' => ['user_id' => $this->Auth->user('id')]]);
+        if(count($exisiingcandidate)) {
+            $this->Flash->success(__('You have already submitted the application form.'));
+            return $this->redirect(['action' => 'index']);
+        }
         if ($this->request->is('post')) {
             $candidate = $this->Candidates->patchEntity($candidate, $this->request->getData());
             // Added this line

@@ -3,59 +3,60 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SchoolsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/User.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/UsersTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CentresTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/RegistrationsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ArticlesTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Programme.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Article.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Centre.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Registrations/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/centre.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/edit.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/config/paginator-templates.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/config/app.default.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Coc.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/edit.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SeatsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/SeatsController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Candidate.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/CategoriesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CocsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Seat.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/login.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/View/AppView.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ProgrammesTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/CandidatesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/edit.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CategoriesTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/ArticlesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/add.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/index.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/User.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/login.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/ArticlesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ArticlesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/UsersTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/config/app.default.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/add.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Category.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/Auth/DefaultPasswordHasher.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/view.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/School.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/CategoriesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Article.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CategoriesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CentresTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/PreferencesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/ProgrammesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SchoolsTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/SeatsTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Candidate.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Centre.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Preference.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Programme.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/School.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Seat.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/SeatsController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/View/AppView.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/config/paginator-templates.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/RegistrationsTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Registrations/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/Auth/DefaultPasswordHasher.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/CandidatesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/edit.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/view.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Articles/edit.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/edit.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/edit.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Coc.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CocsTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/centre.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Layout/default.ctp</file>
         </group>
     </open-files>
 </project-private>
