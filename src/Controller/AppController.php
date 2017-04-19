@@ -16,6 +16,7 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Core\Configure;
 
 /**
  * Application Controller
@@ -68,6 +69,11 @@ class AppController extends Controller
                 'action' => 'login',
                 'home'
             ],
+            'unauthorizedRedirect' => [
+                'controller' => 'candidates',
+                'action' => 'index',
+                'prefix' => false
+            ],
             'authError' => 'You must be authorized to view this page.',
             'loginError' => 'Invalid Username or Password entered, please try again.'
         ]);
@@ -87,16 +93,22 @@ class AppController extends Controller
      */
     public function beforeRender(Event $event)
     {
+        $this->loadComponent('Auth');
         if (!array_key_exists('_serialize', $this->viewVars) &&
             in_array($this->response->type(), ['application/json', 'application/xml'])
         ) {
             $this->set('_serialize', true);
         }
+        if ($this->Auth->user()) {
+            $this->viewBuilder()->theme('AdminLTE');
+            $this->set('theme', Configure::read('Theme'));
+        }
+        $this->set('user', $this->Auth->user());
     }
 	
 	public function beforeFilter(Event $event)
         {
-            //$this->Auth->allow(['login']);
+            $this->Auth->allow(['logout']);
         }
     
         public function isAuthorized($user)

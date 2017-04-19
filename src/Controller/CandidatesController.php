@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Mailer\Email;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 
 class CandidatesController extends AppController {
 
@@ -22,11 +24,13 @@ class CandidatesController extends AppController {
         //$candidates = $this->Candidates->find('all', ['contain' => ['Seats']]);
         //$this->set('candidates', $candidates);
         //debug($seats->toArray()); return null;
+        $this->set('AuthId', $this->Auth->user('id'));
     }
 
     public function view($id) {
         $candidate = $this->Candidates->get($id);
         $this->set(compact('candidate'));
+        $this->set('AuthId', $this->Auth->user('id'));
     }
 
     public function sendemail() {
@@ -91,10 +95,43 @@ class CandidatesController extends AppController {
             return $this->redirect(['action' => 'index']);
         }
     }
+    
+    public function seatalloted($id = null) {
+        $candidatesTable = TableRegistry::get('Candidates');
+        $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
+        
+        //debug($candidate->toArray()); return false;
+        $candidateId = array_keys($candidate->toArray())[0];
+        //$seatAllocationTable = TableRegistry::get('Seatallocations');
+        $query = 'SELECT Seatallocations.id AS `Seatallocations__id`, Seatallocations.candidate_id AS `Seatallocations__candidate_id`, 
+                        Seatallocations.seat_id AS `Seatallocations__seat_id`, Seatallocations.user_id AS `Seatallocations__user_id`, 
+                        Seatallocations.created AS `Seatallocations__created`, Seatallocations.modified AS `Seatallocations__modified`, 
+                        Seatallocations.centre_id AS `Seatallocations__centre_id`,
+                        Programmes.name AS `Programmes__name`, Categories.type AS `Categories__type`
+                        FROM seatallocations Seatallocations 
+                        INNER JOIN seats Seats 
+                        ON (Seatallocations.seat_id = Seats.id
+                        ) 
+                        INNER JOIN programmes Programmes 
+                        ON (Seats.programme_id = Programmes.id 
+                        )
+                        INNER JOIN categories Categories 
+                        ON (Seats.category_id = Categories.id 
+                        )
+                        WHERE Seatallocations.candidate_id = ' . $candidateId;
+        $conn = ConnectionManager::get('default');
+        $stmt = $conn->execute($query);
+        $allocatedSeats = $stmt ->fetchAll('assoc');
+        $this->set('allocatedSeats', $allocatedSeats);
+    }
+    
+    public function submitfee() {
+    }
 
     public function isAuthorized($user = null) {
-        // All users with role as 'exam' can add seats
-        if ($this->request->getParam('action') === 'add' || $this->request->getParam('action') === 'index') {
+        // All users with role as 'exam' can add seats seatalloted
+        if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'add' 
+                || $this->request->getParam('action') === 'index' || $this->request->getParam('action') === 'seatalloted')) {
             return true;
         }
 

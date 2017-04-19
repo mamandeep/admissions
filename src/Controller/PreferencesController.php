@@ -67,6 +67,7 @@ class PreferencesController extends AppController {
                                                                    'valueField' => 'type'));
         //debug($categories->toArray()); return false;
         $this->set('candidates', $candidates);
+        $this->set('AuthId', $this->Auth->user('id'));
     }
 
     public function edit($id = null) {
