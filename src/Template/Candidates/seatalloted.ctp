@@ -23,6 +23,7 @@ td {
 </style>
 <a href="javascript: window.print();" > PRINT </a>
 <h1>Allocated Seats Details</h1>
+<div>
 <table>
     <tr>
         <th>Programme Name</th>
@@ -45,3 +46,4 @@ td {
     <tr>
     <?php endforeach; ?>
 <table>
+</div>

@@ -17,7 +17,7 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Core\Configure;
-
+use Cake\Cache\Cache;
 /**
  * Application Controller
  *
@@ -41,7 +41,7 @@ class AppController extends Controller
     public function initialize()
     {
         parent::initialize();
-
+        Cache::disable();
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
 		

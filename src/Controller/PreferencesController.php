@@ -5,12 +5,13 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Mailer\Email;
 use Cake\Event\Event;
+use Cake\Datasource\ConnectionManager;
 
 class PreferencesController extends AppController {
 
     public function initialize() {
         parent::initialize();
-
+        $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash'); // Include the FlashComponent
     }
 
@@ -45,7 +46,8 @@ class PreferencesController extends AppController {
     }
 
     public function add() {
-        $preference = $this->Preferences->newEntity();
+        $preferences = $this->Preferences->find('all', ['conditions' => ['Preferences.user_id' => $this->Auth->user('id')],
+                                                                         'contain' => ['Programmes', 'Candidates']])->toArray();
         if ($this->request->is('post')) {
             $preference = $this->Preferences->patchEntity($preference, $this->request->getData());
             // Added this line
@@ -59,17 +61,62 @@ class PreferencesController extends AppController {
             }
             $this->Flash->error(__('Unable to save your preferences.'));
         }
-        $this->set('preference', $preference);
+        $this->set('preferences', $preferences);
         $programmes = $this->Preferences->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name')));                               
         $this->set('programmes', $programmes);
-        $candidates = $this->Preferences->Candidates->find('list', array('fields' =>array('Candidates.id','Candidates.name'),
+        $candidates = $this->Preferences->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name'),
                                                                    'keyField' => 'id',
                                                                    'valueField' => 'type'));
+        $testpapers = $this->Preferences->Testpapers->find('list', array('fields' => array('TestpapersProgrammes.testpaper_id','Testpapers.code'),
+                                                                   'keyField' => 'TestpapersProgrammes.testpaper_id',
+                                                                   'valueField' => 'Testpapers.code'))
+                                                    ->innerJoinWith('TestpapersProgrammes', function ($q) {
+                                                        return $q->where(['TestpapersProgrammes.testpaper_id' => 'Testpapers.id']);
+                                                    });
+        $conn = ConnectionManager::get('default');
+        $query_string = 'SELECT TestpapersProgrammes.id AS `TestpapersProgrammes__id`, TestpapersProgrammes.testpaper_id AS `TestpapersProgrammes__testpaper_id`, 
+                        TestpapersProgrammes.programme_id AS `TestpapersProgrammes__programme_id`,
+                        Testpapers.code AS `Testpapers__code`, Programmes.name AS `Programmes__name` 
+                        FROM testpapers_programmes TestpapersProgrammes 
+                        INNER JOIN testpapers Testpapers 
+                        ON (Testpapers.id = TestpapersProgrammes.testpaper_id
+                        ) 
+                        INNER JOIN programmes Programmes 
+                        ON (TestpapersProgrammes.programme_id = Programmes.id 
+                        )
+                        ORDER BY TestpapersProgrammes.testpaper_id asc, TestpapersProgrammes.programme_id asc';
+        $stmt = $conn->execute($query_string);
+        $testpapers = $stmt ->fetchAll('assoc');                                           
         //debug($categories->toArray()); return false;
         $this->set('candidates', $candidates);
+        //$this->set('testpapers', $testpapers);
+        $session = $this->request->session();
+        $session->write('papercodemapping', $testpapers);
         $this->set('AuthId', $this->Auth->user('id'));
     }
 
+    public function viewresult()
+    {
+        //debug(); return false;
+        //$this->autoRender = false;
+        $testpaperId = $this->request->query['id'];
+        $session = $this->request->session();
+        $testpapers = $session->read('papercodemapping');
+        $progs = [];
+        $str = "";
+        foreach ($testpapers as $map) {
+            if($map['TestpapersProgrammes__testpaper_id'] == $testpaperId) {
+                $str .= "<option value=\"" . $map['TestpapersProgrammes__programme_id'] . "\">" . $map['Programmes__name'] . "</option>";
+                $progs[$map['TestpapersProgrammes__programme_id']] = $map['Programmes__name'];
+            }
+        }
+        $this->set('data', $str);
+        $this->set('_serialize', ['data']);
+        //$this->autoRender = false;
+        $this->viewBuilder()->setLayout('ajax');
+        //exit();
+    }
+    
     public function edit($id = null) {
         $preference = $this->Preferences->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
@@ -98,7 +145,8 @@ class PreferencesController extends AppController {
 
     public function isAuthorized($user = null) {
         // All users with role as 'exam' can add seats
-        if ($this->request->getParam('action') === 'add' || $this->request->getParam('action') === 'index') {
+        if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'add' 
+                || $this->request->getParam('action') === 'index' || $this->request->getParam('action') === 'viewresult')) {
             return true;
         }
 
