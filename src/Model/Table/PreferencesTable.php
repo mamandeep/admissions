@@ -39,7 +39,7 @@ class PreferencesTable extends Table
                 ],
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 100],
-                    'message' => 'Maximum marks should be atleast 100.',
+                    'message' => 'Maximum marks should not be more than 100.',
                 ]
             ])
             ->requirePresence('marks_B')
@@ -51,7 +51,7 @@ class PreferencesTable extends Table
                 ],
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 100],
-                    'message' => 'Maximum marks should be atleast 100.',
+                    'message' => 'Maximum marks should not be more than 100.',
                 ]
             ])
             ->requirePresence('marks_total')
@@ -62,8 +62,16 @@ class PreferencesTable extends Table
                     'message' => 'Marks should be atleast 0.',
                 ],
                 'maxValue' => [
-                    'rule' => ['comparison', '<=', 100],
-                    'message' => 'Maximum marks should be atleast 100.',
+                    'rule' => ['comparison', '<=', 200],
+                    'message' => 'Maximum marks should not be more than 200.',
+                ],
+                'sum' => [
+                    'rule' => function ($value, $context) {
+                        $marks_A = $context['data']['marks_A'];
+                        $marks_B = $context['data']['marks_B'];
+                        return ($value == intval($marks_A) + intval($marks_B)) ? true : false;
+                    },
+                    'message' => 'Sum of Marks A and Marks B does not match.'
                 ]
             ]);
         return $validator;

@@ -47,18 +47,25 @@ class PreferencesController extends AppController {
 
     public function add() {
         $preferences = $this->Preferences->find('all', ['conditions' => ['Preferences.user_id' => $this->Auth->user('id')],
-                                                                         'contain' => ['Programmes', 'Candidates']])->toArray();
-        if ($this->request->is('post')) {
-            $preference = $this->Preferences->patchEntity($preference, $this->request->getData());
-            // Added this line
-            $preference->user_id = $this->Auth->user('id');
-            // You could also do the following
-            //$newData = ['user_id' => $this->Auth->user('id')];
-            //$article = $this->Articles->patchEntity($article, $newData);
-            if ($this->Preferences->save($preference)) {
+                                                                         ])->toArray();
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            //debug($this->request->getData()); return false;
+            $preferences = $this->Preferences->patchEntities($preferences, $this->request->getData());
+            $allPrefSaved = true;
+            foreach ($preferences as $preference) {
+                $preference->user_id = $this->Auth->user('id');
+                if($this->Preferences->save($preference)) {
+                }
+                else {
+                    $allPrefSaved = false;
+                    $this->Flash->error(__('Unable to save your preferences.'));
+                }
+            }
+            if($allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
                 return $this->redirect(['action' => 'index']);
             }
+            
             $this->Flash->error(__('Unable to save your preferences.'));
         }
         $this->set('preferences', $preferences);
