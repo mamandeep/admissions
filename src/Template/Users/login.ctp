@@ -1,6 +1,6 @@
 <div class="users form">
 <?= $this->Flash->render() ?>
-<?= $this->Form->create($user); ?>
+<?= $this->Form->create($users); ?>
     <fieldset>
         <legend><?= __('Please enter your username and password') ?></legend>
         <?= $this->Form->control('username') ?>

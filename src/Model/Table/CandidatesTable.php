@@ -15,6 +15,7 @@ class CandidatesTable extends Table
         
         
         $this->hasOne('Seats');
+        $this->belongsTo('Categories');
         $this->hasMany('Preferences');
         
         $this->addBehavior('Timestamp');

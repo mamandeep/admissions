@@ -21,6 +21,7 @@ class CategoriesTable extends Table
         $this->setPrimaryKey('id');
         
         $this->hasMany('Seats');
+        $this->hasMany('Candidates');
         
         $this->addBehavior('Timestamp');
         

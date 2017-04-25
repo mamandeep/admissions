@@ -50,13 +50,15 @@ class CandidatesController extends AppController {
     }
 
     public function add() {
-        $candidate = $this->Candidates->newEntity();
-        $exisiingcandidate = $this->Candidates->find('all', ['condition' => ['user_id' => $this->Auth->user('id')]]);
-        if(count($exisiingcandidate)) {
-            $this->Flash->success(__('You have already submitted the application form.'));
-            return $this->redirect(['action' => 'index']);
+        $candidate = $this->Candidates->find('all', ['conditions' => ['Candidates.user_id' => $this->Auth->user('id')],
+                                                     'contain' => ['Categories']])->toArray();
+        //debug($candidate); //return false;
+        if(count($candidate) > 1) {
+            $this->Flash->error(__('More than 1 application forms have been received. Please contact support.'));
+            return $this->redirect(['action' => 'add']);
         }
-        if ($this->request->is('post')) {
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $candidate = $candidate[0];
             $candidate = $this->Candidates->patchEntity($candidate, $this->request->getData());
             // Added this line
             $candidate->user_id = $this->Auth->user('id');
@@ -65,11 +67,20 @@ class CandidatesController extends AppController {
             //$article = $this->Articles->patchEntity($article, $newData);
             if ($this->Candidates->save($candidate)) {
                 $this->Flash->success(__('Your application form has been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'add']);
             }
             $this->Flash->error(__('Unable to save your application form.'));
         }
-        $this->set('candidate', $candidate);
+        $this->set('candidate', $candidate[0]);
+        $categories = $this->Candidates->Categories->find('all')
+                                                              ->where(['Categories.id !=' => 1]);
+        $catOptions = [];
+        foreach ($categories as $category) {
+            //debug($category);
+            $catOptions[$category['id']] = $category['type'];
+        }
+        
+        $this->set('categories', $catOptions);
     }
 
     public function edit($id = null) {

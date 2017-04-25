@@ -38,7 +38,7 @@ class PreferencesTable extends Table
                     'message' => 'Marks should be atleast 0.',
                 ],
                 'maxValue' => [
-                    'rule' => ['comparison', '<=', 100],
+                    'rule' => ['comparison', '<=', 25],
                     'message' => 'Maximum marks should not be more than 100.',
                 ]
             ])
@@ -50,7 +50,7 @@ class PreferencesTable extends Table
                     'message' => 'Marks should be atleast 0.',
                 ],
                 'maxValue' => [
-                    'rule' => ['comparison', '<=', 100],
+                    'rule' => ['comparison', '<=', 75],
                     'message' => 'Maximum marks should not be more than 100.',
                 ]
             ])
@@ -62,7 +62,7 @@ class PreferencesTable extends Table
                     'message' => 'Marks should be atleast 0.',
                 ],
                 'maxValue' => [
-                    'rule' => ['comparison', '<=', 200],
+                    'rule' => ['comparison', '<=', 100],
                     'message' => 'Maximum marks should not be more than 200.',
                 ],
                 'sum' => [

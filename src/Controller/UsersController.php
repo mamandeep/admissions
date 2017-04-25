@@ -73,7 +73,7 @@ class UsersController extends AppController
             $this->Flash->error(__('Invalid username or password, try again'));
         }
         $user = $this->Users->newEntity();
-        $this->set('user', $user);
+        $this->set('users', $user);
     }
 	
     public function logout()
