@@ -63,7 +63,7 @@ class PreferencesController extends AppController {
             }
             if($allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'add']);
             }
             
             $this->Flash->error(__('Unable to save your preferences.'));

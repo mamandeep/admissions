@@ -1,34 +1,56 @@
-<h1>List of Seats</h1>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table {
+    width: 100%;
+}
+
+th {
+    height: 50px;
+    text-align: center;
+}
+td {
+    height: 50px;
+    text-align: center;
+    vertical-align: bottom;
+}
+</style>
+<h1>List of Available Courses as per Merit</h1>
 <?php 
-     echo $this->Form->create('Lockseat', [
-    'url' => ['controller' => 'seats', 'action' => 'lockseat']
-]); 
+     echo $this->Form->create($rankings, [
+        'url' => ['controller' => 'seats', 'action' => 'lockseat']
+     ]); 
 ?>
 <table>
     <tr>
-        <th>Select (Only one Seat can be Locked)</th>
+        <th>Select</th>
         <th>Programme Name</th>
         <th>Seat Category</th>
-        <th>Rank</th>
+        <th>Merit No.</th>
         <th>Created</th>
     </tr>
 
 <!-- Here's where we loop through our $articles query object, printing out article info -->
 
-    <?php foreach ($seatOptions as $seat): ?>
+    <?php  $i=0;foreach ($rankings as $seat): ?>
     <tr>
         <td><?php //debug($seat);
                 $options = array(array('value' => $seat->id, 'text' => '' ));
                 echo $this->Form->radio(
-                    'rank_id',
+                    "selected_course",
                     $options, [
                     'hiddenField' => false ]
                 ); ?></td>
-        <td> <?php echo $this->Form->hidden('programme_id', [ 'value' => $seat->programme_id]); ?>
+        <td> 
             <?= $seat->programme->name ?>
         </td>
-        <td> <?php echo $this->Form->hidden('final_category_id', [ 'value' => $seat->final_category_id]); ?>
-             <?php echo $this->Form->hidden('candidate_id', [ 'value' => $seat->candidate_id]); ?>
+        <td> 
             <?= $seat->category->type ?>
         </td>
         <td>
@@ -41,7 +63,24 @@
             ?>
         </td>
     </tr>
-    <?php endforeach; ?>
+    <?php $i++; endforeach; ?>
 </table>
-<?php echo $this->Form->button(__('Lock Seat')); ?>
+<br/>
+<div style="text-align: center"><?php echo $this->Form->button(__('Lock Seat')); ?></div>
 <?php echo $this->Form->end(); ?>
+<br/>
+<div>
+    <p>The currently locked seat is<p>
+    <?php foreach ($rankings as $seat) {
+        //debug($seat->id);debug($lockedSeatRankId);
+        if(isset($lockedSeatRankId) && $seat->id === intval($lockedSeatRankId)) { ?>
+            <ul>
+                <li>Programme Name : <?php echo $seat->programme->name; ?></li>
+                <li>Category : <?php echo $seat->category->type; ?></li>
+                <li>Merit in Programme : <?php echo $seat->rank; ?></li>
+            </ul>
+        <?php  } 
+    }
+?>
+    
+</div>

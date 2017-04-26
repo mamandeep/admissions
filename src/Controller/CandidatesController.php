@@ -21,9 +21,6 @@ class CandidatesController extends AppController {
     }
 
     public function index() {
-        //$candidates = $this->Candidates->find('all', ['contain' => ['Seats']]);
-        //$this->set('candidates', $candidates);
-        //debug($seats->toArray()); return null;
         $this->set('AuthId', $this->Auth->user('id'));
     }
 

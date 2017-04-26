@@ -39,7 +39,7 @@ class PreferencesTable extends Table
                 ],
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 25],
-                    'message' => 'Maximum marks should not be more than 100.',
+                    'message' => 'Maximum marks should not be more than 25.',
                 ]
             ])
             ->requirePresence('marks_B')
@@ -51,7 +51,7 @@ class PreferencesTable extends Table
                 ],
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 75],
-                    'message' => 'Maximum marks should not be more than 100.',
+                    'message' => 'Maximum marks should not be more than 75.',
                 ]
             ])
             ->requirePresence('marks_total')
@@ -63,7 +63,7 @@ class PreferencesTable extends Table
                 ],
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 100],
-                    'message' => 'Maximum marks should not be more than 200.',
+                    'message' => 'Maximum marks should not be more than 100.',
                 ],
                 'sum' => [
                     'rule' => function ($value, $context) {
