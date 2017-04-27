@@ -52,14 +52,17 @@ class PreferencesController extends AppController {
             //debug($this->request->getData()); return false;
             $preferences = $this->Preferences->patchEntities($preferences, $this->request->getData());
             $allPrefSaved = true;
+            $count = 0;
             foreach ($preferences as $preference) {
                 $preference->user_id = $this->Auth->user('id');
-                if($this->Preferences->save($preference)) {
+                $preference->selected = ($count == 0) ? 1 : (!empty($preference->selected)) ? 1 : 0;
+                if($preference->selected == 1 && $this->Preferences->save($preference)) {
                 }
-                else {
+                else if($preference->selected == 1) {
                     $allPrefSaved = false;
                     $this->Flash->error(__('Unable to save your preferences.'));
                 }
+                $count++;
             }
             if($allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
