@@ -1,6 +1,29 @@
+<style>
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table {
+    width: 100%;
+}
+
+th {
+    height: 50px;
+    text-align: center;
+}
+td {
+    height: 50px;
+    text-align: center;
+    vertical-align: bottom;
+}
+</style>
 <?php use Cake\Routing\Router; ?>
 <h1>Preferences</h1>
-<p>Only 3 Preferences are allowed</p>
+<p style="color: crimson;">Minimum of 1 preference has to be filled. Maximum of 3 preferences are allowed. Please select the checkbox to submit the other preferences.</p>
 <?php echo $this->Form->create($preferences, ['name' => 'preferences_form']); ?>
 <table>
     <tr>
@@ -47,15 +70,39 @@
                         }
                   }
                   if($default == true) {
-                      echo $this->Form->control("$count.testpaper_id", ['disabled' => 'disabled', 'label' => false, 'options' => $optionsarr, 'type' => 'select' , 'id' => "{$count}_test_paper_code", array_keys($optionsarr)[0]]);
+                        echo $this->Form->input(
+                            "$count.testpaper_id",
+                            [  'disabled' => 'disabled',
+                               'label' => false,
+                               'options' => $optionsarr,
+                               'type' => 'select',
+                               //'maxlength' => 10,
+                               'id' => "{$count}_test_paper_code",
+                               'default' => array_keys($optionsarr)[0],
+                               'class' => 'form-control'
+                            ]
+                        );
+                      //echo $this->Form->control("$count.testpaper_id", ;
                   }
                   else {
-                      echo $this->Form->control("$count.testpaper_id", ['disabled' => 'disabled', 'label' => false, 'options' => $optionsarr, 'type' => 'select' , 'id' => "{$count}_test_paper_code"]); 
+                        echo $this->Form->input(
+                            "$count.testpaper_id",
+                            [  
+                               'options' => $optionsarr,
+                               'type' => 'select',
+                               //'maxlength' => 10,
+                               'id' => "{$count}_test_paper_code",
+                               'class' => 'form-control',
+                               'disabled' => 'disabled',
+                               'label' => false,
+                            ]
+                        );
+                      //echo $this->Form->control("$count.testpaper_id", ['disabled' => 'disabled', 'label' => false, 'options' => $optionsarr, 'type' => 'select' , 'maxlength' => 10 , 'id' => "{$count}_test_paper_code"]); 
                   } ?></td>
-        <td><?php echo $this->Form->control("$count.programme_id", ['label' => false, 'options' => $poptionsarr, 'type' => 'select' ,'id' => "{$count}_programmes"]); ?></td>
-        <td><?php echo $this->Form->control("$count.marks_A", ['label' => false]) ?></td>
-        <td><?php echo $this->Form->control("$count.marks_B", ['label' => false]) ?></td>
-        <td><?php echo $this->Form->control("$count.marks_total", ['label' => false]) ?></td>
+        <td><?php echo $this->Form->control("$count.programme_id", ['label' => false, 'options' => $poptionsarr, 'type' => 'select' , 'maxlength' => 10, 'id' => "{$count}_programmes"]); ?></td>
+        <td><?php echo $this->Form->control("$count.marks_A", ['label' => false, 'maxlength' => 10]) ?></td>
+        <td><?php echo $this->Form->control("$count.marks_B", ['label' => false, 'maxlength' => 10]) ?></td>
+        <td><?php echo $this->Form->control("$count.marks_total", ['label' => false, 'maxlength' => 10]) ?></td>
     </tr>
     <?php } ?>
 </table>
@@ -237,28 +284,18 @@
         if(elem.addEventListener) {
             $('#0_test_paper_code').change();
             $('#1_test_paper_code').change();
-            $('#2_test_paper_code').change();
-            $('#0_checkbox').attr('checked', true);
-            $('#1_checkbox').attr('checked', true);
-            $('#2_checkbox').attr('checked', true);
-            $("#preferences_form").submit(function() {
-                $("input").removeAttr("disabled");
-            });
-            $('#preferences_form *').filter(':input').each(function(){
-                $(this).attr('disabled', false);
-            });
+            $('#2_test_paper_code').change(); 
+            $('#0_test_paper_code').attr('disabled', false);
+            $('#1_test_paper_code').attr('disabled', false);
+            $('#2_test_paper_code').attr('disabled', false);           
         }
         else if (elem.attachEvent) {
-            $('#0_test_paper_code').onchange();
-            $('#1_test_paper_code').onchange();
-            $('#2_test_paper_code').onchange();
-            $('#0_checkbox').attr('checked', true);
-            $('#1_checkbox').attr('checked', true);
-            $('#2_checkbox').attr('checked', true);
-            var elems = document.forms["preferences_form"].getElementsByTagName("input");
-            for(var i=0; i<elems.length; i++) {
-                elems[i].setAttribute("disabled", false);
-            }
+            document.getElementById('0_test_paper_code').onchange();
+            document.getElementById('1_test_paper_code').onchange();
+            document.getElementById('2_test_paper_code').onchange();
+            document.getElementById('0_test_paper_code').setAttribute("disabled", false);
+            document.getElementById('1_test_paper_code').setAttribute("disabled", false);
+            document.getElementById('2_test_paper_code').setAttribute("disabled", false);
         }
         
         

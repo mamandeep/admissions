@@ -47,22 +47,38 @@ class PreferencesController extends AppController {
 
     public function add() {
         $preferences = $this->Preferences->find('all', ['conditions' => ['Preferences.user_id' => $this->Auth->user('id')],
+                                                        'order' => ['Preferences.id' => 'ASC']
                                                                          ])->toArray();
         if ($this->request->is(['patch', 'post', 'put'])) {
-            //debug($this->request->getData()); return false;
-            $preferences = $this->Preferences->patchEntities($preferences, $this->request->getData());
+            //debug($this->checkOrder($this->request->getData())); debug($this->request->getData()); return false;
+            //$preferences = $this->Preferences->patchEntities($preferences, $this->request->getData());
+            if(!$this->checkOrder($this->request->getData())) {
+                $this->Flash->error(__('The preferences selected are not in order.'));
+                return $this->redirect(['action' => 'add']);
+            }
             $allPrefSaved = true;
             $count = 0;
-            foreach ($preferences as $preference) {
-                $preference->user_id = $this->Auth->user('id');
-                $preference->selected = ($count == 0) ? 1 : (!empty($preference->selected)) ? 1 : 0;
-                if($preference->selected == 1 && $this->Preferences->save($preference)) {
+            $preference = "";
+            for ($count=0; $count < 3; $count++ ) {
+                $pref_data = $this->request->getData()[$count];
+                //debug($pref_data); //return false;
+                if(($count == 0) ? 1 : (!empty($pref_data['selected'])) ? 1 : 0) {
+                    $preference = $this->Preferences->newEntity($pref_data);
+                    $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 1], ['validate' => false]);
+                }
+                else {
+                    $preference = $this->Preferences->newEntity($pref_data, ['validate' => false]);
+                    $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 0], ['validate' => false]);
+                }
+                $preferences[$count] = $preference;
+                //debug($preferences);
+                if($this->Preferences->save($preference)) {
                 }
                 else if($preference->selected == 1) {
                     $allPrefSaved = false;
                     $this->Flash->error(__('Unable to save your preferences.'));
                 }
-                $count++;
+                ;
             }
             if($allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
@@ -105,6 +121,26 @@ class PreferencesController extends AppController {
         $this->set('AuthId', $this->Auth->user('id'));
     }
 
+    private function checkOrder($data) {
+        $count = 0;
+        $flag = true;
+        for($count=0; $count < count($data); $count++ ) {
+            switch($count) {
+                case 0 :
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    $flag = (!empty($data[2]['selected']) && empty($data[1]['selected'])) ? false : true;
+                    //debug(!empty($data[2]['selected']) && empty($data[1]['selected']));
+                    break;
+                default: 
+                    break;
+            }
+        }
+        return $flag;
+    }
+    
     public function viewresult()
     {
         //debug(); return false;
