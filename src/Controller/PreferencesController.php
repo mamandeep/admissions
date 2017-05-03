@@ -67,8 +67,18 @@ class PreferencesController extends AppController {
                     $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 1], ['validate' => false]);
                 }
                 else {
-                    $preference = $this->Preferences->newEntity($pref_data, ['validate' => false]);
-                    $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 0], ['validate' => false]);
+                    //TODO: fill custom data like 'Select, empty, empty, empty ,empty
+                    $newData = [];
+                    $newData['id'] = $pref_data->id;
+                    $newData['candidate_id'] = $pref_data->candidate_id;
+                    $newData['programme_id'] = NULL;
+                    $newData['testpaper_id'] = 0;
+                    $newData['marks_A'] = NULL;
+                    $newData['marks_B'] = NULL;
+                    $newData['marks_total'] = NULL;
+                    $newData['user_id'] = $this->Auth->user('id');
+                    $newData['selected'] = 0;
+                    $preference = $this->Preferences->newEntity($newData, ['validate' => false]);
                 }
                 $preferences[$count] = $preference;
                 //debug($preferences);
@@ -86,6 +96,12 @@ class PreferencesController extends AppController {
             }
             
             $this->Flash->error(__('Unable to save your preferences.'));
+        }
+        if(count($preferences) == 0) {
+            $preferences = [];
+            $preferences[0] = $this->Preferences->newEntity();
+            $preferences[1] = $this->Preferences->newEntity();
+            $preferences[2] = $this->Preferences->newEntity();
         }
         $this->set('preferences', $preferences);
         $programmes = $this->Preferences->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name')));                               

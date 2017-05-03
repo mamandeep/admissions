@@ -47,6 +47,7 @@ td {
                   echo $this->Form->input( "$count.selected", array(
                       'label' => false,
                       'type'=>'checkbox',
+                      'id' => "{$count}_selectbox_id",
                       'value' => $count,
                       'checked'=>$checked,
                       'disabled' => $disabled,
@@ -60,6 +61,7 @@ td {
                     'hiddenField' => false, 'id' => "{$count}_checkbox",  'checked' => $checked , 'readonly' => $readonly]
                   );*/ ?></td>
         <td><?php   $optionsarr = []; $uniqueOptions = []; $poptionsarr = []; //debug($this->request->session()->read('papercodemapping'));
+                    $optionsarr['0'] = 'Select';
                     foreach ($this->request->session()->read('papercodemapping') as $map) {
                         if(!in_array($map['TestpapersProgrammes__testpaper_id'], $uniqueOptions)) {
                             $optionsarr[$map['TestpapersProgrammes__testpaper_id']] =  $map['Testpapers__code'];
@@ -78,7 +80,7 @@ td {
                                'type' => 'select',
                                //'maxlength' => 10,
                                'id' => "{$count}_test_paper_code",
-                               'default' => array_keys($optionsarr)[0],
+                               'empty' => '0',
                                'class' => 'form-control'
                             ]
                         );
@@ -128,7 +130,7 @@ td {
         if(elem.addEventListener) {
             $('#0_test_paper_code').change(function() {
                     var selectedValue = $(this).val();
-                    var optionsStr = "";
+                    var optionsStr = "<option value='0'>Select</option>";
                     //var programmeElem = $('#0_programmes');
                     for(var i=0; i < data.length; i++) {
                         for(var j=0; j< data[i].length; j++) {
@@ -155,6 +157,15 @@ td {
             elem.attachEvent("onchange", function() {
                         var selectedValue = elem.options[elem.selectedIndex].value;
                         var optionsStr = "";
+                        var selectbox = document.getElementById('1_programmes');
+                        var i;
+                        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+                        {
+                            selectbox.remove(i);
+                        }
+                        opt.value = 0;
+                        opt.innerHTML = 'Select';
+                        selectbox.appendChild(opt);
                         for(var i=0; i < data.length; i++) {
                             for(var j=0; j< data[i].length; j++) {
                                 if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
@@ -169,11 +180,14 @@ td {
                                         }
                                     }
                                     optionsStr += '<option value="' + value + '">' +  text + '</option>';
+                                    opt = document.createElement('option');
+                                    opt.value = value;
+                                    opt.innerHTML = text;
+                                    selectbox.appendChild(opt);
                                     continue;
                                 }
                             }
                         }
-                        $('#0_programmes').find('option').remove().end().append(optionsStr);
             });
         }
         elem.disabled  = false;
@@ -181,32 +195,57 @@ td {
         if(elem.addEventListener) {
             $('#1_test_paper_code').change(function() {
                 var selectedValue = $(this).val();
-                var optionsStr = "";
+                var optionsStr = "<option value='0'>Select</option>";
                 for(var i=0; i < data.length; i++) {
-                            for(var j=0; j< data[i].length; j++) {
-                                if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
-                                    var text, value;
-                                    for(var k=0; k<data[i].length; k++) {
+                    for(var j=0; j< data[i].length; j++) {
+                        if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
+                            var text, value;
+                            for(var k=0; k<data[i].length; k++) {
 
-                                        if(data[i][k].TestpapersProgrammes__programme_id) {
-                                            value = data[i][k].TestpapersProgrammes__programme_id;
-                                        }
-                                        if(data[i][k].Programmes__name) {
-                                            text = data[i][k].Programmes__name;
-                                        }
-                                    }
-                                    optionsStr += '<option value="' + value + '">' +  text + '</option>';
-                                    continue;
+                                if(data[i][k].TestpapersProgrammes__programme_id) {
+                                    value = data[i][k].TestpapersProgrammes__programme_id;
+                                }
+                                if(data[i][k].Programmes__name) {
+                                    text = data[i][k].Programmes__name;
                                 }
                             }
+                            optionsStr += '<option value="' + value + '">' +  text + '</option>';
+                            continue;
                         }
+                    }
+                }
                 $('#1_programmes').find('option').remove().end().append(optionsStr);
+            });
+            $('input[name="1[selected]"]').change(function() {
+                if(this.checked) {
+                    $('select[name="1[testpaper_id]"]').attr('disabled', false);
+                    $('select[name="1[programme_id]"]').attr('disabled', false);
+                    $('input[name="1[marks_A]"]').attr('disabled', false);
+                    $('input[name="1[marks_B]"]').attr('disabled', false);
+                    $('input[name="1[marks_total]"]').attr('disabled', false);
+                }
+                else {
+                    $('select[name="1[testpaper_id]"]').attr('disabled', true);
+                    $('select[name="1[programme_id]"]').attr('disabled', true);
+                    $('input[name="1[marks_A]"]').attr('disabled', true);
+                    $('input[name="1[marks_B]"]').attr('disabled', true);
+                    $('input[name="1[marks_total]"]').attr('disabled', true);
+                }
             });
         }
         else if (elem.attachEvent) { // IE DOM
             elem.attachEvent("onchange", function() {
                         var selectedValue = elem.options[elem.selectedIndex].value;
-                        var optionsStr = "";
+                        var optionsStr = "<option value='0'>Select</option>";
+                        var selectbox = document.getElementById('1_programmes');
+                        var i;
+                        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+                        {
+                            selectbox.remove(i);
+                        }
+                        opt.value = 0;
+                        opt.innerHTML = 'Select';
+                        selectbox.appendChild(opt);
                         for(var i=0; i < data.length; i++) {
                             for(var j=0; j< data[i].length; j++) {
                                 if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
@@ -221,11 +260,30 @@ td {
                                         }
                                     }
                                     optionsStr += '<option value="' + value + '">' +  text + '</option>';
+                                    opt = document.createElement('option');
+                                    opt.value = value;
+                                    opt.innerHTML = text;
+                                    selectbox.appendChild(opt);
                                     continue;
                                 }
                             }
                         }
-                        $('#1_programmes').find('option').remove().end().append(optionsStr);
+            });
+            document.getElementsByName("1[selected]")[0].onchange(function() {
+                if(this.checked) {
+                    document.getElementsByName("1[testpaper_id]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("1[programme_id]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("1[marks_A]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("1[marks_B]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("1[marks_total]")[0].setAttribute("disabled", false);
+                }
+                else {
+                    document.getElementsByName("1[testpaper_id]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("1[programme_id]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("1[marks_A]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("1[marks_B]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("1[marks_total]")[0].setAttribute("disabled", true);
+                }
             });
         }
         elem.disabled  = false;
@@ -233,7 +291,7 @@ td {
         if(elem.addEventListener) {
             $('#2_test_paper_code').change(function() {
                     var selectedValue = $(this).val();
-                    var optionsStr = "";
+                    var optionsStr = "<option value='0'>Select</option>";
                     for(var i=0; i < data.length; i++) {
                             for(var j=0; j< data[i].length; j++) {
                                 if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
@@ -254,30 +312,75 @@ td {
                         }
                     $('#2_programmes').find('option').remove().end().append(optionsStr);
             });
+            $('input[name="2[selected]"]').change(function() {
+                if(this.checked) {
+                    $('select[name="2[testpaper_id]"]').attr('disabled', false);
+                    $('select[name="2[programme_id]"]').attr('disabled', false);
+                    $('input[name="2[marks_A]"]').attr('disabled', false);
+                    $('input[name="2[marks_B]"]').attr('disabled', false);
+                    $('input[name="2[marks_total]"]').attr('disabled', false);
+                }
+                else {
+                    $('select[name="2[testpaper_id]"]').attr('disabled', true);
+                    $('select[name="2[programme_id]"]').attr('disabled', true);
+                    $('input[name="2[marks_A]"]').attr('disabled', true);
+                    $('input[name="2[marks_B]"]').attr('disabled', true);
+                    $('input[name="2[marks_total]"]').attr('disabled', true);
+                }
+            });
         }
         else if (elem.attachEvent) { // IE DOM
             elem.attachEvent("onchange", function() {
-                        var selectedValue = elem.options[elem.selectedIndex].value;
-                        var optionsStr = "";
-                        for(var i=0; i < data.length; i++) {
-                            for(var j=0; j< data[i].length; j++) {
-                                if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
-                                    var text, value;
-                                    for(var k=0; k<data[i].length; k++) {
+                var selectedValue = elem.options[elem.selectedIndex].value;
+                var optionsStr = "<option value='0'>Select</option>";
+                var selectbox = document.getElementById('1_programmes');
+                var i;
+                for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
+                {
+                    selectbox.remove(i);
+                }
+                var opt = document.createElement('option');
+                opt.value = 0;
+                opt.innerHTML = 'Select';
+                selectbox.appendChild(opt);
+                for(var i=0; i < data.length; i++) {
+                    for(var j=0; j< data[i].length; j++) {
+                        if(data[i][j].TestpapersProgrammes__testpaper_id && selectedValue == data[i][j].TestpapersProgrammes__testpaper_id) {
+                            var text, value;
+                            for(var k=0; k<data[i].length; k++) {
 
-                                        if(data[i][k].TestpapersProgrammes__programme_id) {
-                                            value = data[i][k].TestpapersProgrammes__programme_id;
-                                        }
-                                        if(data[i][k].Programmes__name) {
-                                            text = data[i][k].Programmes__name;
-                                        }
-                                    }
-                                    optionsStr += '<option value="' + value + '">' +  text + '</option>';
-                                    continue;
+                                if(data[i][k].TestpapersProgrammes__programme_id) {
+                                    value = data[i][k].TestpapersProgrammes__programme_id;
+                                }
+                                if(data[i][k].Programmes__name) {
+                                    text = data[i][k].Programmes__name;
                                 }
                             }
+                            optionsStr += '<option value="' + value + '">' +  text + '</option>';
+                            opt = document.createElement('option');
+                            opt.value = value;
+                            opt.innerHTML = text;
+                            selectbox.appendChild(opt);
+                            continue;
                         }
-                        $('#2_programmes').find('option').remove().end().append(optionsStr);
+                    }
+                }
+            });
+            document.getElementsByName("2[selected]")[0].onchange(function() {
+                if(this.checked) {
+                    document.getElementsByName("2[testpaper_id]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("2[programme_id]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("2[marks_A]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("2[marks_B]")[0].setAttribute("disabled", false);
+                    document.getElementsByName("2[marks_total]")[0].setAttribute("disabled", false);
+                }
+                else {
+                    document.getElementsByName("2[testpaper_id]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("2[programme_id]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("2[marks_A]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("2[marks_B]")[0].setAttribute("disabled", true);
+                    document.getElementsByName("2[marks_total]")[0].setAttribute("disabled", true);
+                }
             });
         }
         elem.disabled  = false;
@@ -287,7 +390,10 @@ td {
             $('#2_test_paper_code').change(); 
             $('#0_test_paper_code').attr('disabled', false);
             $('#1_test_paper_code').attr('disabled', false);
-            $('#2_test_paper_code').attr('disabled', false);           
+            $('#2_test_paper_code').attr('disabled', false);
+            $('input[name="0[selected]"]').change();
+            $('input[name="1[selected]"]').change();
+            $('input[name="2[selected]"]').change();
         }
         else if (elem.attachEvent) {
             document.getElementById('0_test_paper_code').onchange();
@@ -296,8 +402,9 @@ td {
             document.getElementById('0_test_paper_code').setAttribute("disabled", false);
             document.getElementById('1_test_paper_code').setAttribute("disabled", false);
             document.getElementById('2_test_paper_code').setAttribute("disabled", false);
+            document.getElementByName('0[selected]')[0].onchange();
+            document.getElementByName('1[selected]')[0].onchange();
+            document.getElementByName('2[selected]')[0].onchange();
         }
-        
-        
     }
 </script>

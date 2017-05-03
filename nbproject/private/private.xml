@@ -7,6 +7,7 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/lockseat.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/PreferencesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/Validation/Validator.php</file>
             <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/View/Helper.php</file>
         </group>
     </open-files>
