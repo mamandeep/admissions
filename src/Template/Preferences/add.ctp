@@ -150,7 +150,7 @@ td {
                             }
                         }
                     }
-                    $('#0_programmes').find('option').remove().end().append(optionsStr);
+                    $('#0_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[0]['programme_id']; ?>');
             });
         }
         else if (elem.attachEvent) { // IE DOM
@@ -214,7 +214,7 @@ td {
                         }
                     }
                 }
-                $('#1_programmes').find('option').remove().end().append(optionsStr);
+                $('#1_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[1]['programme_id']; ?>');
             });
             $('input[name="1[selected]"]').change(function() {
                 if(this.checked) {
@@ -310,7 +310,7 @@ td {
                                 }
                             }
                         }
-                    $('#2_programmes').find('option').remove().end().append(optionsStr);
+                    $('#2_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[2]['programme_id']; ?>');
             });
             $('input[name="2[selected]"]').change(function() {
                 if(this.checked) {
@@ -383,7 +383,7 @@ td {
                 }
             });
         }
-        elem.disabled  = false;
+        elem.disabled = false;
         if(elem.addEventListener) {
             $('#0_test_paper_code').change();
             $('#1_test_paper_code').change();

@@ -50,8 +50,6 @@ class PreferencesController extends AppController {
                                                         'order' => ['Preferences.id' => 'ASC']
                                                                          ])->toArray();
         if ($this->request->is(['patch', 'post', 'put'])) {
-            //debug($this->checkOrder($this->request->getData())); debug($this->request->getData()); return false;
-            //$preferences = $this->Preferences->patchEntities($preferences, $this->request->getData());
             if(!$this->checkOrder($this->request->getData())) {
                 $this->Flash->error(__('The preferences selected are not in order.'));
                 return $this->redirect(['action' => 'add']);
@@ -61,16 +59,14 @@ class PreferencesController extends AppController {
             $preference = "";
             for ($count=0; $count < 3; $count++ ) {
                 $pref_data = $this->request->getData()[$count];
-                //debug($pref_data); //return false;
                 if(($count == 0) ? 1 : (!empty($pref_data['selected'])) ? 1 : 0) {
                     $preference = $this->Preferences->newEntity($pref_data);
                     $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 1], ['validate' => false]);
                 }
                 else {
-                    //TODO: fill custom data like 'Select, empty, empty, empty ,empty
                     $newData = [];
-                    $newData['id'] = $pref_data->id;
-                    $newData['candidate_id'] = $pref_data->candidate_id;
+                    $newData['id'] = $pref_data['id'];
+                    $newData['candidate_id'] = $pref_data['candidate_id'];
                     $newData['programme_id'] = NULL;
                     $newData['testpaper_id'] = 0;
                     $newData['marks_A'] = NULL;
@@ -81,14 +77,11 @@ class PreferencesController extends AppController {
                     $preference = $this->Preferences->newEntity($newData, ['validate' => false]);
                 }
                 $preferences[$count] = $preference;
-                //debug($preferences);
                 if($this->Preferences->save($preference)) {
                 }
                 else if($preference->selected == 1) {
                     $allPrefSaved = false;
-                    $this->Flash->error(__('Unable to save your preferences.'));
                 }
-                ;
             }
             if($allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
@@ -129,9 +122,7 @@ class PreferencesController extends AppController {
                         ORDER BY TestpapersProgrammes.testpaper_id asc, TestpapersProgrammes.programme_id asc';
         $stmt = $conn->execute($query_string);
         $testpapers = $stmt ->fetchAll('assoc');                                           
-        //debug($categories->toArray()); return false;
         $this->set('candidates', $candidates);
-        //$this->set('testpapers', $testpapers);
         $session = $this->request->session();
         $session->write('papercodemapping', $testpapers);
         $this->set('AuthId', $this->Auth->user('id'));

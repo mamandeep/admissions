@@ -8,4 +8,7 @@
     </fieldset>
 <?= $this->Form->button(__('Login')); ?>
 <?= $this->Form->end() ?>
+<br/>
+<p><?= $this->Html->link('Register', ['controller' => 'registrations', 'action' => 'add']) ?></p>
+<p><?= $this->Html->link('Forgot Password', ['controller' => 'registrations', 'action' => 'forgotpasswd']) ?></p>
 </div>

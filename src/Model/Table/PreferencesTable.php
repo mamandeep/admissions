@@ -19,7 +19,7 @@ class PreferencesTable extends Table
         $this->setTable('preferences');
         $this->setPrimaryKey('id');
         
-        //$this->hasOne('Programmes');
+        //$this->hasOne('Cucets');
         $this->belongsTo('Programmes');
         $this->belongsTo('Candidates');
         $this->belongsTo('Testpapers');
@@ -84,16 +84,18 @@ class PreferencesTable extends Table
                     'rule' => function ($value, $context) use ($sessionData) {
                         //debug($value); debug($context); debug($sessionData);
                         $testPaperId = $context['data']['testpaper_id'];
+                        if(intval($testPaperId) === 0 || intval($value) === 0) {
+                            return false;
+                        }
                         $matched = false;
                         foreach ($sessionData as $papaercodeProgMap) {
                             if($testPaperId == $papaercodeProgMap['TestpapersProgrammes__testpaper_id'] && $value == $papaercodeProgMap['TestpapersProgrammes__programme_id']) {
                                 $matched = true;
                             }
                         }
-                        //debug($matched);
                         return $matched;
                     },
-                    'message' => 'Selected Programme and Test Paper code do not match.'
+                    'message' => 'CUCET Test paper code and Programme Name are mandatory.'
                 ]
             ])
             ->requirePresence('testpaper_id')
