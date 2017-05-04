@@ -36,10 +36,10 @@ td {
         <th width="8%">Total Marks</th>
     </tr>
     <?php $count = 0; $default  = (count($preferences) === 0) ? true : false;
-            for ($count=0; $count<3; $count++) { //debug($preferences); ?>
+            for ($count=0; $count<3; $count++) { //debug($candidate); ?>
     <tr>
         <td><?php echo $this->Form->control("$count.id", ['type' => 'hidden']); 
-                  echo $this->Form->control("$count.candidate_id", ['type' => 'hidden']);
+                  echo $this->Form->control("$count.candidate_id", ['type' => 'hidden', 'value' => $candidate['id']]);
                   echo $count+1; ?></td>
         <td><?php $options = array(array('value' => $count, 'text' => '' ));
                   $checked = ($count == 0) ? true : (!empty($preferences[$count]['selected'])) ? true : false;

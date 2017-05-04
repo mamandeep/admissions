@@ -99,9 +99,8 @@ class PreferencesController extends AppController {
         $this->set('preferences', $preferences);
         $programmes = $this->Preferences->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name')));                               
         $this->set('programmes', $programmes);
-        $candidates = $this->Preferences->Programmes->find('list', array('fields' =>array('Programmes.id','Programmes.name'),
-                                                                   'keyField' => 'id',
-                                                                   'valueField' => 'type'));
+        $candidate = $this->Preferences->Candidates->find('all', array('fields'     => array('Candidates.id'),
+                                                                        'conditions' => ['Candidates.user_id' => $this->Auth->user('id')]))->first();
         $testpapers = $this->Preferences->Testpapers->find('list', array('fields' => array('TestpapersProgrammes.testpaper_id','Testpapers.code'),
                                                                    'keyField' => 'TestpapersProgrammes.testpaper_id',
                                                                    'valueField' => 'Testpapers.code'))
@@ -122,7 +121,7 @@ class PreferencesController extends AppController {
                         ORDER BY TestpapersProgrammes.testpaper_id asc, TestpapersProgrammes.programme_id asc';
         $stmt = $conn->execute($query_string);
         $testpapers = $stmt ->fetchAll('assoc');                                           
-        $this->set('candidates', $candidates);
+        $this->set('candidate', $candidate);
         $session = $this->request->session();
         $session->write('papercodemapping', $testpapers);
         $this->set('AuthId', $this->Auth->user('id'));

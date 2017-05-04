@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Controller\AppController;
 use Cake\Event\Event;
 
 use Cake\ORM\TableRegistry;
@@ -22,6 +21,7 @@ class RegistrationsController extends UsersController {
         if ($this->request->is('post')) {
             debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
+            debug($user);
             if ($this->Registrations->save($user)) {
                 //$this->Auth->setUser($user->toArray());
                 $this->Flash->success(__('You have successfully registered.'));
