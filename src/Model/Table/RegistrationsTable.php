@@ -38,6 +38,16 @@ class RegistrationsTable extends UsersTable
                     'message' => 'The username is not a valid CUCET Application Id.'
                 ]
             ])
+            ->requirePresence('email')
+            ->notEmpty('email', 'Please fill this field')
+            ->add('email', [
+                'correct' => [
+                    'rule' => function ($value, $context) {
+                        return filter_var($value, FILTER_VALIDATE_EMAIL);
+                    },
+                    'message' => 'The email Id. should be valid. e.g. abc@xyz.com'
+                ]
+            ])
             ->requirePresence('mobile')
             ->notEmpty('mobile', 'Please fill this field')
             ->add('mobile', [

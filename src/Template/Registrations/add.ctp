@@ -2,8 +2,9 @@
 <?= $this->Form->create($user) ?>
     <fieldset>
         <legend><?= __('Registration Details') ?></legend>
-        <?= $this->Form->control('username', ['label' => 'CUCET Applicant Id (e.g. PGxxxxxxxx)']) ?>
+        <?= $this->Form->control('username', ['label' => 'CUCET Applicant Id (e.g. PGXXXXXXXX)']) ?>
         <?= $this->Form->control('name', ['label' => 'Name']) ?>
+        <?= $this->Form->control('email', ['label' => 'Email Id.']) ?>
         <?= $this->Form->control('mobile', ['label' => 'Mobile No. (10 digit)']) ?>        
         <?= $this->Form->control('password', ['label' => 'Password']) ?>
         <ul>

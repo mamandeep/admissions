@@ -3,14 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/User.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Registrations/add.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/add.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/PreferencesTable.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/RegistrationsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/User.php</file>
         </group>
     </open-files>
 </project-private>
