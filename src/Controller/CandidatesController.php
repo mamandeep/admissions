@@ -54,29 +54,30 @@ class CandidatesController extends AppController {
             $this->Flash->error(__('More than 1 application forms have been received. Please contact support.'));
             return $this->redirect(['action' => 'add']);
         }
+        $candidate = (count($candidate) === 1) ? $candidate[0] : $this->Candidates->newEntity();
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $candidate = $candidate[0];
             $candidate = $this->Candidates->patchEntity($candidate, $this->request->getData());
-            // Added this line
             $candidate->user_id = $this->Auth->user('id');
-            // You could also do the following
-            //$newData = ['user_id' => $this->Auth->user('id')];
-            //$article = $this->Articles->patchEntity($article, $newData);
             if ($this->Candidates->save($candidate)) {
                 $this->Flash->success(__('Your application form has been saved.'));
                 return $this->redirect(['action' => 'add']);
             }
             $this->Flash->error(__('Unable to save your application form.'));
         }
-        $this->set('candidate', $candidate[0]);
+        $this->set('candidate', $candidate);
         $categories = $this->Candidates->Categories->find('all')
                                                               ->where(['Categories.id !=' => 1]);
+        $states = $this->Candidates->States->find('all');
+        $statesOptions = [];
         $catOptions = [];
+        foreach ($states as $state) {
+            $statesOptions[$state['id']] = $state['state_name'];
+        }
         foreach ($categories as $category) {
             //debug($category);
             $catOptions[$category['id']] = $category['type'];
         }
-        
+        $this->set('states', $statesOptions);
         $this->set('categories', $catOptions);
     }
 

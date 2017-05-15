@@ -6,6 +6,7 @@ use App\Controller\AppController;
 use Cake\Mailer\Email;
 use Cake\Event\Event;
 use Cake\Datasource\ConnectionManager;
+use Cake\ORM\TableRegistry;
 
 class PreferencesController extends AppController {
 
@@ -57,10 +58,14 @@ class PreferencesController extends AppController {
             $allPrefSaved = true;
             $count = 0;
             $preference = "";
+            $validationErrosPresent = false;
             for ($count=0; $count < 3; $count++ ) {
                 $pref_data = $this->request->getData()[$count];
+                //debug($this->request->getData()); return false;
                 if(($count == 0) ? 1 : (!empty($pref_data['selected'])) ? 1 : 0) {
                     $preference = $this->Preferences->newEntity($pref_data);
+                    $validationErrosPresent = !empty($preference->errors()) ? true : false;
+                    //debug($preference); return false;
                     $preference = $this->Preferences->patchEntity($preference, ['user_id' => $this->Auth->user('id'), 'selected' => 1], ['validate' => false]);
                 }
                 else {
@@ -77,13 +82,18 @@ class PreferencesController extends AppController {
                     $preference = $this->Preferences->newEntity($newData, ['validate' => false]);
                 }
                 $preferences[$count] = $preference;
-                if($this->Preferences->save($preference)) {
-                }
-                else if($preference->selected == 1) {
-                    $allPrefSaved = false;
+            }
+            //debug($preferences); return null;
+            if(!$validationErrosPresent) {
+                foreach($preferences as $preferenceObj) {
+                    if($this->Preferences->save($preferenceObj)) {
+                    }
+                    else if($preference->selected == 1) {
+                        $allPrefSaved = false;
+                    }
                 }
             }
-            if($allPrefSaved) {
+            if(!$validationErrosPresent && $allPrefSaved) {
                 $this->Flash->success(__('Your preferences have been saved.'));
                 return $this->redirect(['action' => 'add']);
             }
@@ -122,8 +132,26 @@ class PreferencesController extends AppController {
         $stmt = $conn->execute($query_string);
         $testpapers = $stmt ->fetchAll('assoc');                                           
         $this->set('candidate', $candidate);
+        $query_string = 'select t1.id as testpaper_id, u1.id as user_id, c2.vTestPaperCode as cucet_papercode,
+                        c2.Part_A as cucet_marks_A, c2.Part_B as cucet_marks_B, c2.Marks as cucet_total_marks 
+                        from candidates as c1
+                        inner join users as u1
+                        on c1.user_id = u1.id
+                        inner join cucets as c2
+                        on u1.username = c2.ApplicationID
+                        inner join testpapers as t1
+                        on t1.code = c2.vTestPaperCode
+                        where u1.id = ' . $this->Auth->user('id') . '
+                        group by c2.vTestPaperCode';
+        $stmt = $conn->execute($query_string);
+        $cucetdata = $stmt->fetchAll('assoc');
+        $filesTable = TableRegistry::get('Uploadfiles'); 
+        $file = $filesTable->find()->where(['Uploadfiles.user_id' => $this->Auth->user('id')])->toArray();
+        //debug($file); return null;
         $session = $this->request->session();
         $session->write('papercodemapping', $testpapers);
+        $session->write('cucetdata', $cucetdata);
+        $session->write('scorecardUploaded', (count($file) > 0) ? true : false);
         $this->set('AuthId', $this->Auth->user('id'));
     }
 

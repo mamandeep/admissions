@@ -21,8 +21,8 @@ class RegistrationsController extends UsersController {
     public function add()
     {
         $user = $this->Registrations->newEntity();
-        if ($this->request->is('post')) {
-            debug($this->request->getData());
+        if ($this->request->is(['post', 'put'])) {
+            //debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
             debug($user);
             if ($this->Registrations->save($user)) {
@@ -139,12 +139,21 @@ class RegistrationsController extends UsersController {
         $match = true;
         
         $match = (strlen($newPassword) >= 8) ? true : false;
+        if($match === false) {
+            return $match;
+        }
         //debug($match);
         $pattern = '/[0-9]+/';
         $match = (preg_match($pattern, $newPassword)) ? true : false;
+        if($match === false) {
+            return $match;
+        }
         //debug($match);
         $pattern = '/[a-zA-Z]+/';
         $match = (preg_match($pattern, $newPassword)) ? true : false;
+        if($match === false) {
+            return $match;
+        }
         //debug($match);
         $match = (strcmp($newPassword,$passwordConfirm) === 0);
         //debug($match);

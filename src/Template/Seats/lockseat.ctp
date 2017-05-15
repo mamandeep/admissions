@@ -21,7 +21,15 @@ td {
     vertical-align: bottom;
 }
 </style>
-<h1>List of Available Courses as per Merit</h1>
+<label style="font-size: 16px; text-align: center;">Choice Lock-Selection of One Programme for Locking</label>
+<div>Based on the information provided by you and all the other candidates in the counselling form, following is your merit position in the individual merit lists of the programmes already selected by you:</div>
+<ul>
+    <?php foreach ($rankings as $seat): 
+        echo "<li>\"" . $seat->rank . "\" place in " .  $seat->programme->name . " - " . $seat->category->type . " Category </li>"; 
+    endforeach; ?>
+</ul>
+<div>Please note that above information is for information only and to assist you in making an informed decision. Seats will be offered based on the merit list to be prepared out of the choices locked by the candidates in each round.</div>
+<label>> Each candidate can <span style="text-decoration: underline;">Lock only One Programme</span> in each round and his/her name will not be considered in other programmes in merit lists of that round. In the next round, she/he can again lock same/different preference and so on.</label>
 <?php 
      echo $this->Form->create($rankings, [
         'url' => ['controller' => 'seats', 'action' => 'lockseat']

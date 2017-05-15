@@ -43,7 +43,7 @@ class RegistrationsTable extends UsersTable
             ->add('email', [
                 'correct' => [
                     'rule' => function ($value, $context) {
-                        return filter_var($value, FILTER_VALIDATE_EMAIL);
+                        return (!filter_var($value, FILTER_VALIDATE_EMAIL) === false) ? true : false;
                     },
                     'message' => 'The email Id. should be valid. e.g. abc@xyz.com'
                 ]

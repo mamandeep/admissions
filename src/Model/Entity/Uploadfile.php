@@ -4,7 +4,7 @@ namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
 
-class Preference extends Entity
+class Uploadfile extends Entity
 {
 
 }
