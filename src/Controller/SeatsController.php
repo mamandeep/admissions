@@ -109,6 +109,9 @@ class SeatsController extends AppController {
         //$this->request->allowMethod(['post', 'delete']);
         $lockseatsTable = TableRegistry::get('Lockseats');
         $rankingsTable = TableRegistry::get('Rankings');
+        $seatOptions = $rankingsTable->find('all', ['conditions' => ['Rankings.user_id' => $this->Auth->user('id')],
+                'contain' => ['Programmes', 'Categories']]);
+        $rankingSelected = '';
         $lockedSeat = $lockseatsTable->find('all', ['conditions' => ['Lockseats.user_id' => $this->Auth->user('id')]])->toArray();
         if(count($lockedSeat) > 1) {
             $this->Flash->error('An error has occured while locking seat. Please contact support.');
@@ -116,30 +119,117 @@ class SeatsController extends AppController {
         }
         $lockedSeat = (count($lockedSeat) === 0) ? $lockseatsTable->newEntity() : $lockedSeat[0];
         if ($this->request->is(['patch', 'post', 'put']) && !empty($this->request->data()['selected_course'])) {
-            $rankingSelected = $rankingsTable->find('all', ['conditions' => ['Rankings.id' => $this->request->data()['selected_course']]])->toArray();
-            $rankingSelected = $rankingSelected[0];
-            //$rankingSelected->offered_seat = 1;
+            //debug($this->request->data()); return null;
             $lockSeatData = [];
-            $lockSeatData['programme_id'] = $rankingSelected->programme_id;
-            $lockSeatData['candidate_id'] = $rankingSelected->candidate_id;
-            $lockSeatData['final_category_id'] = $rankingSelected->final_category_id;
-            $lockSeatData['rank_id'] = $rankingSelected->id;
-            $lockSeatData['user_id'] = $rankingSelected->user_id;
+            $eligible_for_open = '';
+            $category_pref = 0;
+            $rankId = 0;
+            $rankingObjectArr = $seatOptions->toArray();
+            //debug($this->request->data());debug($rankingObjectArr);
+            if(!empty($this->request->data()['eligible_for_open'])) {
+                foreach($this->request->data()['eligible_for_open'] as $key => $value){
+                    //debug($key); debug($value);debug($this->request->data()['category_pref'][$key]);debug($rankingObjectArr[$key+$key]['final_category_id']);
+                    if(intval($this->request->data()['category_pref'][$key]) === $rankingObjectArr[$key+$key]['final_category_id']) {
+                        $str = $this->request->data()['selected_course'] . "_assoc";
+                        //debug($rankingObjectArr[$key+$key]['id']);debug(intval($this->request->data()[$str]));
+                        if($rankingObjectArr[$key+$key]['id'] === intval($this->request->data()[$str])) {
+                            $rankId = $this->request->data()[$str];
+                            $eligible_for_open = $this->request->data()['eligible_for_open'][$key];
+                            $category_pref = $this->request->data()['category_pref'][$key];
+                            //debug("1");debug($eligible_for_open);
+                        }
+                    }
+                    debug(intval($this->request->data()['category_pref'][$key]));debug($rankingObjectArr[$key+$key+1]['final_category_id']);
+                    if(intval($this->request->data()['category_pref'][$key]) === $rankingObjectArr[$key+$key+1]['final_category_id']) {
+                        //debug($rankingObjectArr[$key+$key+1]['id']);debug(intval($this->request->data()['selected_course']));
+                        if($rankingObjectArr[$key+$key+1]['id'] === intval($this->request->data()['selected_course'])) {
+                            $rankId = $this->request->data()['selected_course'];
+                            $eligible_for_open = $this->request->data()['eligible_for_open'][$key];
+                            $category_pref = $this->request->data()['category_pref'][$key];
+                            //debug("2");debug($eligible_for_open);
+                        }
+                    }
+                }
+            }
+            if(!empty(trim($eligible_for_open)) && strcmp($eligible_for_open, "yes") === 0 && intval($category_pref) === 1) {
+                $rankingSelected = $rankingsTable->find('all', ['conditions' => ['Rankings.id' => $rankId]])->toArray();
+                $rankingSelected = $rankingSelected[0];
+                $lockSeatData['programme_id'] = $rankingSelected->programme_id;
+                $lockSeatData['candidate_id'] = $rankingSelected->candidate_id;
+                $lockSeatData['final_category_id'] = $rankingSelected->final_category_id;
+                $lockSeatData['rank_id'] = $rankingSelected->id;
+                $lockSeatData['user_id'] = $rankingSelected->user_id;
+                $lockSeatData['eligible_for_open'] = $eligible_for_open;
+                $lockSeatData['category_pref'] = $category_pref;
+            }
+            else {
+                $rankingSelected = $rankingsTable->find('all', ['conditions' => ['Rankings.id' => $this->request->data()['selected_course']]])->toArray();
+                $rankingSelected = $rankingSelected[0];
+                $lockSeatData['programme_id'] = $rankingSelected->programme_id;
+                $lockSeatData['candidate_id'] = $rankingSelected->candidate_id;
+                $lockSeatData['final_category_id'] = $rankingSelected->final_category_id;
+                $lockSeatData['rank_id'] = $rankingSelected->id;
+                $lockSeatData['user_id'] = $rankingSelected->user_id;
+                $lockSeatData['eligible_for_open'] = $eligible_for_open;
+                $lockSeatData['category_pref'] = $category_pref;
+            }
             $lockedSeat = $lockseatsTable->patchEntity($lockedSeat, $lockSeatData);
+            //debug($lockedSeat); return null;
             if ($lockseatsTable->save($lockedSeat)) {
                 $this->Flash->success('The seat has been locked.');
                 return $this->redirect(['action' => 'lockseat']);
             } 
             $this->Flash->error('The seat could not be locked. Please contact support.');
         }
+        else if($this->request->is(['patch', 'post', 'put']) && empty($this->request->data()['selected_course'])){
+            $this->Flash->error('Please select the radio button under "Lock Seat" and then submit.');
+        }
         
-        $seatOptions = $rankingsTable->find('all', ['conditions' => ['Rankings.user_id' => $this->Auth->user('id')],
-                'contain' => ['Programmes', 'Categories']]);
+        
         //debug($seatOptions);
         $this->set('AuthId', $this->Auth->user('id'));
         $this->set('rankings', $seatOptions);
         $this->set('lockedSeatRankId', $lockedSeat->rank_id);
+        $this->set('lockedSeat', $lockedSeat);
         //debug($lockedSeat->rank_id);
+    }
+    
+    public function summary($id = null) {
+        $conn = ConnectionManager::get('default');
+        $query_string = 'select s1.programme_id as p_id, p1.name as p_name, count(*) as Total_seats, SUM(CASE  WHEN category_id = 1 and candidate_id is not NULL THEN 1 ELSE 0 END) as Open_filled,
+                        SUM(CASE  WHEN category_id = 3 and candidate_id is not NULL THEN 1 ELSE 0 END) as SC_filled,
+                        SUM(CASE  WHEN category_id = 4 and candidate_id is not NULL THEN 1 ELSE 0 END) as ST_filled,
+                        SUM(CASE  WHEN category_id = 5 and candidate_id is not NULL THEN 1 ELSE 0 END) as OBC_filled,
+                        SUM(CASE  WHEN category_id = 1 and candidate_id is NULL THEN 1 ELSE 0 END) as Open_vacant,
+                        SUM(CASE  WHEN category_id = 3 and candidate_id is NULL THEN 1 ELSE 0 END) as SC_vacant,
+                        SUM(CASE  WHEN category_id = 4 and candidate_id is NULL THEN 1 ELSE 0 END) as ST_vacant,
+                        SUM(CASE  WHEN category_id = 5 and candidate_id is NULL THEN 1 ELSE 0 END) as OBC_vacant
+                        from seats s1
+                        inner join programmes p1
+                        on s1.programme_id = p1.id
+                        group by s1.programme_id';
+        $stmt = $conn->execute($query_string);
+        $seatsSummary = $stmt->fetchAll('assoc');
+        $totalSeats = '';
+        $seatsFilled = '';
+        $seatsVacant = '';
+        foreach($seatsSummary as $programme) {
+            $totalSeats  += $programme['Total_seats'];
+            $seatsFilled += ($programme['Open_filled'] + $programme['SC_filled'] + $programme['ST_filled'] + $programme['OBC_filled'] );
+            $seatsVacant += ($programme['Open_vacant'] + $programme['SC_vacant'] + $programme['ST_vacant'] + $programme['OBC_vacant'] );
+        }
+        $this->set('totalseats', $totalSeats);
+        $this->set('seatsfilled', $seatsFilled);
+        $this->set('seatsvacant', $seatsVacant);
+        $this->set('summary', $seatsSummary);
+    }
+    
+    public function admissions($id = null) {
+        
+    }
+    
+    public function meritlist($id = null) {
+        
     }
     
     public function allocateseats($id = null) {
@@ -232,7 +322,8 @@ class SeatsController extends AppController {
         // All users with role as 'exam' can add seats
         if (isset($user['role']) && $user['role'] === 'exam' && ($this->request->getParam('action') === 'add' 
             || $this->request->getParam('action') === 'centre' || $this->request->getParam('action') === 'allocateseats'
-            || $this->request->getParam('action') === 'printseats')) {
+            || $this->request->getParam('action') === 'printseats' || $this->request->getParam('action') === 'summary'
+            || $this->request->getParam('action') === 'admissions' || $this->request->getParam('action') === 'meritlist')) {
             return true;
         }
 

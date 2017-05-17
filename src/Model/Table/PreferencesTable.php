@@ -12,7 +12,7 @@ use Cake\Datasource\ConnectionManager;
 
 class PreferencesTable extends Table
 {
-
+    private $verified = [];
     public function initialize(array $config)
     {
         parent::initialize($config);
@@ -83,7 +83,6 @@ class PreferencesTable extends Table
                 ],
                 'validatecucet' => [
                     'rule' => function ($value, $context) use ($cucetdata, $scorecardUploaded) {
-                        
                         //Add a check here that if CUCET Score card has been uploaded.
                         $matched = false;
                         foreach($cucetdata as $cucet) {
@@ -91,6 +90,7 @@ class PreferencesTable extends Table
                                 $matched = ($context['data']['marks_A'] === $cucet['cucet_marks_A']) ? (($context['data']['marks_B'] === $cucet['cucet_marks_B']) ? true : false) : false;
                             }
                         }
+                        $this->verified[$context['data']['id']] = ($matched === true) ? 1 : 0;
                         return ($matched === false)  ? $scorecardUploaded : true;
                     },
                     'message' => 'The data entered does not match with CUCET (Test Paper Code, Marks A, Marks B). Please correct the data or upload CUCET Score Card.'
@@ -125,5 +125,11 @@ class PreferencesTable extends Table
     public function isOwnedBy($preferenceId, $userId)
     {
         return $this->exists(['id' => $preferenceId, 'user_id' => $userId]);
+    }
+    
+    public function beforeSave($event, $entity, $options) {
+        //debug($this->verified); debug($entity); debug($options);
+        $entity->verified = (!empty($this->verified[$entity->id])) ? $this->verified[$entity->id] : NULL;
+        //return false;
     }
 }
