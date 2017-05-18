@@ -225,11 +225,109 @@ class SeatsController extends AppController {
     }
     
     public function admissions($id = null) {
-        
+        $programmesTable = \Cake\ORM\TableRegistry::get('Programmes');
+        $programmes = $programmesTable->find('list', ['fields'  =>  array('Programmes.id', 'Programmes.name')]);
+        $programme = $programmesTable->newEntity();
+        $programme_id = '';
+        $conn = ConnectionManager::get('default');
+        $query_string = '';
+        $stmt = '';
+        $summary = [];
+        //debug($this->request->data());
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $programme_id = !empty($this->request->data()['id']) ? intval($this->request->data()['id']) : 0;
+            $programme = $programmesTable->find('all')
+                                         ->where(['Programmes.id' => $programme_id])->toArray();
+            $query_string = 'select c1.cucet_roll_no as cucet_roll_no, c1.name as c_name, c2.type as c_category, c3.type as s_category, s1.fee_id as fee from 
+                            seats s1
+                            inner join candidates c1
+                            on c1.id = s1.candidate_id
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = s1.category_id
+                            where s1.programme_id = ' . $programme_id . '
+                            order by c_name asc;';
+            $stmt = $conn->execute($query_string);
+            $summary = $stmt->fetchAll('assoc');
+            
+        }
+        $query_string = 'select s1.programme_id as p_id, p1.name as p_name, count(*) as Total_seats, SUM(CASE  WHEN candidate_id is not NULL THEN 1 ELSE 0 END) as Total_filled,
+                        SUM(CASE  WHEN candidate_id is NULL THEN 1 ELSE 0 END) as Total_vacant
+                        from seats s1
+                        inner join programmes p1
+                        on s1.programme_id = p1.id
+                        group by s1.programme_id
+                        ';
+        $stmt = $conn->execute($query_string);
+        $seatsSummary = $stmt->fetchAll('assoc');
+        $totalSeats = '';
+        $seatsFilled = '';
+        $seatsVacant = '';
+        foreach($seatsSummary as $programmeData) {
+            $totalSeats  += $programmeData['Total_seats'];
+            $seatsFilled += $programmeData['Total_filled'];
+            $seatsVacant += $programmeData['Total_vacant'];
+        }
+        $this->set('totalseats', $totalSeats);
+        $this->set('seatsfilled', $seatsFilled);
+        $this->set('seatsvacant', $seatsVacant);
+        $this->set('programme', $programme);
+        $this->set('programmes', $programmes);
+        $this->set('summary', $summary);
     }
     
     public function meritlist($id = null) {
-        
+        $programmesTable = \Cake\ORM\TableRegistry::get('Programmes');
+        $programmes = $programmesTable->find('list', ['fields'  =>  array('Programmes.id', 'Programmes.name')]);
+        $programme = $programmesTable->newEntity();
+        $programme_id = '';
+        $conn = ConnectionManager::get('default');
+        $query_string = '';
+        $stmt = '';
+        $summary = [];
+        //debug($this->request->data());
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $programme_id = !empty($this->request->data()['id']) ? intval($this->request->data()['id']) : 0;
+            $programme = $programmesTable->find('all')
+                                         ->where(['Programmes.id' => $programme_id])->toArray();
+            $query_string = 'select c1.cucet_roll_no as cucet_roll_no, c1.name as c_name, c2.type as c_category, c3.type as s_category, s1.fee_id as fee from 
+                            seats s1
+                            inner join candidates c1
+                            on c1.id = s1.candidate_id
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = s1.category_id
+                            where s1.programme_id = ' . $programme_id . '
+                            order by c_name asc;';
+            $stmt = $conn->execute($query_string);
+            $summary = $stmt->fetchAll('assoc');
+            
+        }
+        $query_string = 'select s1.programme_id as p_id, p1.name as p_name, count(*) as Total_seats, SUM(CASE  WHEN candidate_id is not NULL THEN 1 ELSE 0 END) as Total_filled,
+                        SUM(CASE  WHEN candidate_id is NULL THEN 1 ELSE 0 END) as Total_vacant
+                        from seats s1
+                        inner join programmes p1
+                        on s1.programme_id = p1.id
+                        group by s1.programme_id
+                        ';
+        $stmt = $conn->execute($query_string);
+        $seatsSummary = $stmt->fetchAll('assoc');
+        $totalSeats = '';
+        $seatsFilled = '';
+        $seatsVacant = '';
+        foreach($seatsSummary as $programmeData) {
+            $totalSeats  += $programmeData['Total_seats'];
+            $seatsFilled += $programmeData['Total_filled'];
+            $seatsVacant += $programmeData['Total_vacant'];
+        }
+        $this->set('totalseats', $totalSeats);
+        $this->set('seatsfilled', $seatsFilled);
+        $this->set('seatsvacant', $seatsVacant);
+        $this->set('programme', $programme);
+        $this->set('programmes', $programmes);
+        $this->set('summary', $summary);
     }
     
     public function allocateseats($id = null) {
