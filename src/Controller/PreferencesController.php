@@ -85,12 +85,16 @@ class PreferencesController extends AppController {
             }
             //debug($preferences); return null;
             if(!$validationErrosPresent) {
-                foreach($preferences as $preferenceObj) {
-                    if($this->Preferences->save($preferenceObj)) {
+                try {   
+                    foreach($preferences as $preferenceObj) {
+                        if($this->Preferences->save($preferenceObj)) {
+                        }
+                        else if($preference->selected == 1) {
+                            $allPrefSaved = false;
+                        }
                     }
-                    else if($preference->selected == 1) {
-                        $allPrefSaved = false;
-                    }
+                } catch (\Exception $e) {
+                    $allPrefSaved = false;
                 }
             }
             if(!$validationErrosPresent && $allPrefSaved) {

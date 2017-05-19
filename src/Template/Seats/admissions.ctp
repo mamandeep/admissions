@@ -27,7 +27,7 @@ td {
     //debug($programme);
     echo $this->Form->create($programme);
     echo $this->Form->control("user_id", ['type' => 'hidden']); 
-    echo $this->Form->control("id", ['label' => 'Select Programme: ',  'options' => $programmes, 'type' => 'select' , 'id' => "programme_id", 'maxlength'=>'100']); 
+    echo $this->Form->control("id", ['label' => 'Select Programme: ',  'empty' => ['select' => 'Select'], 'options' => $programmes, 'type' => 'select' , 'id' => "programme_id", 'maxlength'=>'100']); 
     echo $this->Form->end();  ?>
 <table>
     <tr>
