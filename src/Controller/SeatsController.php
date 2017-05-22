@@ -393,47 +393,225 @@ class SeatsController extends AppController {
                                                      'fields'  =>  array('Cocs.centre_id')]]);
         $id = array_keys($query->toArray())[0];
         
+        $programmesTable = \Cake\ORM\TableRegistry::get('Programmes');
+        $programmes = $programmesTable->find('list', ['fields'  =>  array('Programmes.id', 'Programmes.name')]);
+        $programme = $programmesTable->newEntity();
+        $programme_id = 0;
+        $conn = ConnectionManager::get('default');
+        $query_string = '';
+        $stmt = '';
+        $summaryOpen = [];
+        $summarySC = [];
+        $summaryST = [];
+        $summaryOBC = [];
+        $totalOpenSeats = '';
+        $seatsOpenFilled = '';
+        $seatsOpenVacant = '';
+        $totalSCSeats = '';
+        $seatsSCFilled = '';
+        $seatsSCVacant = '';
+        $totalSTSeats = '';
+        $seatsSTFilled = '';
+        $seatsSTVacant = '';
+        $totalOBCSeats = '';
+        $seatsOBCFilled = '';
+        $seatsOBCVacant = '';
+        
         $seatAllocationTable = TableRegistry::get('Seatallocations');
+        $seatsTable = TableRegistry::get('Seats');
         if ($this->request->is(['patch', 'post', 'put'])) {
-            //debug($this->request->data()); return false;
-            $seatAllocations = $seatAllocationTable->newEntities($this->request->data('Seatallocation'));
-
-            foreach ($seatAllocations as $seat) {
-                $seat->user_id = $this->Auth->user('id');
-                $seatAllocationTable->save($seat);
-            }
-        }
-            $conn = ConnectionManager::get('default');
-            $query_string = 'SELECT Lockseats.id AS `Lockseats__id`, Lockseats.candidate_id AS `Lockseats__candidate_id`, 
-                        Lockseats.programme_id AS `Lockseats__programme_id`, Lockseats.final_category_id AS `Lockseats__final_category_id`, 
-                        Lockseats.created AS `Lockseats__created`, Lockseats.modified AS `Lockseats__modified`, 
-                        Lockseats.user_id AS `Lockseats__user_id`, Lockseats.rank_id AS `Lockseats__rank_id`,
-                        Preferences.marks_total AS `Preferences__marks_total`, Programmes.name AS `Programmes__name`,
-                        Seats.seat_no AS `Seats__seat_no`, Seats.id AS `Seats__id`, Categories.type AS `Categories__type`,
-                        Programmes.centre_id AS `Programmes__centre_id`
-                        FROM lockseats Lockseats 
-                        INNER JOIN preferences Preferences 
-                        ON (Preferences.candidate_id = Lockseats.candidate_id
-                                AND Preferences.programme_id = Lockseats.programme_id
-                        ) 
-                        INNER JOIN programmes Programmes 
-                        ON (Lockseats.programme_id = Programmes.id 
-                        )
-                        INNER JOIN categories Categories 
-                        ON (Lockseats.final_category_id = Categories.id 
-                        )
-                        INNER JOIN seats Seats 
-                        ON (Seats.category_id = Lockseats.final_category_id 
-                                AND Seats.programme_id = Lockseats.programme_id 
-                        )
-                        WHERE Lockseats.programme_id in (SELECT Programmes.id AS `Programmes__id` FROM programmes Programmes where Programmes.centre_id = ' . $id . ' ) 
-                        AND Seats.id not in (SELECT Seatallocations.seat_id from seatallocations Seatallocations)
-                        ORDER BY Lockseats.programme_id asc, Lockseats.final_category_id asc';
+            //debug($this->request->data()); return null;
+            $query_string = 'select s1.programme_id as p_id, count(*) as Total_seats, 
+                        SUM(CASE  WHEN candidate_id is not NULL THEN 1 ELSE 0 END) as Total_filled,
+                        SUM(CASE  WHEN candidate_id is NULL THEN 1 ELSE 0 END) as Total_vacant,
+                        SUM(CASE  WHEN category_id = 1 and candidate_id is NULL THEN 1 ELSE 0 END) as Open_vacant,
+                        SUM(CASE  WHEN category_id = 3 and candidate_id is NULL THEN 1 ELSE 0 END) as SC_vacant,
+                        SUM(CASE  WHEN category_id = 4 and candidate_id is NULL THEN 1 ELSE 0 END) as ST_vacant,
+                        SUM(CASE  WHEN category_id = 5 and candidate_id is NULL THEN 1 ELSE 0 END) as OBC_vacant,
+                        SUM(CASE  WHEN category_id = 1 and candidate_id is not NULL THEN 1 ELSE 0 END) as Open_filled,
+                        SUM(CASE  WHEN category_id = 3 and candidate_id is not NULL THEN 1 ELSE 0 END) as SC_filled,
+                        SUM(CASE  WHEN category_id = 4 and candidate_id is not NULL THEN 1 ELSE 0 END) as ST_filled,
+                        SUM(CASE  WHEN category_id = 5 and candidate_id is not NULL THEN 1 ELSE 0 END) as OBC_filled
+                        from seats s1
+                        where s1.programme_id = ' . $programme_id ;
             $stmt = $conn->execute($query_string);
-        $lockedSeats = $stmt ->fetchAll('assoc');
-        //debug($lockedSeats); return false;
-        $this->set('lockedSeats', $lockedSeats);
-        //$this->set('AuthId', $this->Auth->user('id'));
+            $seatsSummary = $stmt->fetchAll('assoc');
+
+            foreach($seatsSummary as $programmeData) {
+                $totalOpenSeats  += $programmeData['Open_filled']+$programmeData['Open_vacant'];
+                $seatsOpenFilled += $programmeData['Open_filled'];
+                $seatsOpenVacant += $programmeData['Open_vacant'];
+                $totalSCSeats  += $programmeData['SC_filled']+$programmeData['SC_vacant'];
+                $seatsSCFilled += $programmeData['SC_filled'];
+                $seatsSCVacant += $programmeData['SC_vacant'];
+                $totalSTSeats  += $programmeData['ST_filled']+$programmeData['ST_vacant'];
+                $seatsSTFilled += $programmeData['ST_filled'];
+                $seatsSTVacant += $programmeData['ST_vacant'];
+                $totalOBCSeats  += $programmeData['OBC_filled']+$programmeData['OBC_vacant'];
+                $seatsOBCFilled += $programmeData['OBC_filled'];
+                $seatsOBCVacant += $programmeData['OBC_vacant'];
+            }
+            
+            if(!empty($this->request->data('Seatallocation'))) {
+                $saved = true;
+                $data = [];
+                //debug($this->request->data('Seatallocation')); return null;
+                $conn->begin();
+                $count = 0;
+                foreach($this->request->data('Seatallocation') as $seat) {
+                    if(intval($seat['idcheck']) === 1) {
+                        $data[$count]['candidate_id'] = $seat['candidate_id'];
+                        $data[$count++]['seat_id'] = $seat['seat_id'];
+                    }
+                }
+                $seatAllocations = $seatAllocationTable->newEntities($data);
+                foreach ($seatAllocations as $seat) {
+                    $seat->user_id = $this->Auth->user('id');
+                    if(!$seatAllocationTable->save($seat)) {
+                        $saved = false;
+                    }
+                    //debug($saved);
+                }
+                if ($saved) {
+                    $conn->commit();
+                } else {
+                    $conn->rollback();
+                }
+                
+            }
+            $programme_id = (!empty($this->request->data()['id']) && is_numeric($this->request->data()['id'])) ? intval($this->request->data()['id']) : 0;
+            if($programme_id === 0) {
+                $this->Flash->error(__('The programme selected is not a valid programme.'));
+                return $this->redirect(['action' => 'allocateseats']);
+            }
+            $programme = $programmesTable->find('all')
+                                         ->where(['Programmes.id' => $programme_id])->toArray();
+            //debug($programme);
+            if(count($programme) === 0) {
+                $this->Flash->error(__('The programme selected is not a valid programme.'));
+                return $this->redirect(['action' => 'allocateseats']);
+            }
+            $programme = $programme[0];
+            
+            $query_string = 'select r1.rank as merit, c1.cucet_roll_no as rollno,
+                            c1.name as c_name, c2.type as c_category, 
+                            c3.type as c_category_pref,
+                            s1.id as seat_id, c1.id as c_id, l1.programme_id as programme_id
+                            from lockseats l1
+                            inner join candidates c1
+                            on c1.id = l1.candidate_id
+                            inner join rankings r1
+                            on r1.id = l1.rank_id
+                            inner join seats s1
+                            on s1.programme_id = l1.programme_id and (case when l1.category_pref = 0 and s1.category_id = 1 then true
+                            when l1.category_pref != 0 and s1.category_id = l1.category_pref then true
+                            else false
+                            end)
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = (case when l1.category_pref = 0 then 1 else l1.category_pref end)
+                            where l1.programme_id = ' . $programme_id . ' and l1.eligible_for_open != \'no\' and l1.candidate_id not in (select candidate_id from seatallocations where candidate_id is not NULL)
+                            group by c1.id, c1.cucet_roll_no
+                            order by r1.rank limit 20';
+            $stmt = $conn->execute($query_string);
+            $summaryOpen = $stmt ->fetchAll('assoc');
+            
+            $query_string = 'select r1.rank as merit, c1.cucet_roll_no as rollno,
+                            c1.name as c_name, c2.type as c_category, 
+                            c3.type as c_category_pref,
+                            s1.id as seat_id, c1.id as c_id, l1.programme_id as programme_id
+                            from lockseats l1
+                            inner join candidates c1
+                            on c1.id = l1.candidate_id
+                            inner join rankings r1
+                            on r1.id = l1.rank_id
+                            inner join seats s1
+                            on s1.programme_id = l1.programme_id and (case when l1.category_pref = 0 and s1.category_id = 1 then true
+                            when l1.category_pref != 0 and s1.category_id = l1.category_pref then true
+                            else false
+                            end)
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = (case when l1.category_pref = 0 then 1 else l1.category_pref end)
+                            where l1.programme_id = ' . $programme_id . ' and (l1.category_pref = 3 or l1.final_category_id = 3) and l1.candidate_id not in (select candidate_id from seatallocations where candidate_id is not NULL)
+                            group by c1.id, c1.cucet_roll_no
+                            order by r1.rank limit 20';
+            $stmt = $conn->execute($query_string);
+            $summarySC = $stmt ->fetchAll('assoc');
+            
+            $query_string = 'select r1.rank as merit, c1.cucet_roll_no as rollno,
+                            c1.name as c_name, c2.type as c_category, 
+                            c3.type as c_category_pref,
+                            s1.id as seat_id, c1.id as c_id, l1.programme_id as programme_id
+                            from lockseats l1
+                            inner join candidates c1
+                            on c1.id = l1.candidate_id
+                            inner join rankings r1
+                            on r1.id = l1.rank_id
+                            inner join seats s1
+                            on s1.programme_id = l1.programme_id and (case when l1.category_pref = 0 and s1.category_id = 1 then true
+                            when l1.category_pref != 0 and s1.category_id = l1.category_pref then true
+                            else false
+                            end)
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = (case when l1.category_pref = 0 then 1 else l1.category_pref end)
+                            where l1.programme_id = ' . $programme_id . ' and (l1.category_pref = 4 or l1.final_category_id = 4) and l1.candidate_id not in (select candidate_id from seatallocations where candidate_id is not NULL)
+                            group by c1.id, c1.cucet_roll_no
+                            order by r1.rank limit 20';
+            $stmt = $conn->execute($query_string);
+            $summaryST = $stmt ->fetchAll('assoc');
+            
+            $query_string = 'select r1.rank as merit, c1.cucet_roll_no as rollno,
+                            c1.name as c_name, c2.type as c_category, 
+                            c3.type as c_category_pref,
+                            s1.id as seat_id, c1.id as c_id, l1.programme_id as programme_id
+                            from lockseats l1
+                            inner join candidates c1
+                            on c1.id = l1.candidate_id
+                            inner join rankings r1
+                            on r1.id = l1.rank_id
+                            inner join seats s1
+                            on s1.programme_id = l1.programme_id and (case when l1.category_pref = 0 and s1.category_id = 1 then true
+                            when l1.category_pref != 0 and s1.category_id = l1.category_pref then true
+                            else false
+                            end)
+                            inner join categories c2
+                            on c2.id = c1.category_id
+                            inner join categories c3
+                            on c3.id = (case when l1.category_pref = 0 then 1 else l1.category_pref end)
+                            where l1.programme_id = ' . $programme_id . ' and (l1.category_pref = 5 or l1.final_category_id = 5) and l1.candidate_id not in (select candidate_id from seatallocations where candidate_id is not NULL)
+                            group by c1.id, c1.cucet_roll_no
+                            order by r1.rank limit 20';
+            $stmt = $conn->execute($query_string);
+            $summaryOBC = $stmt ->fetchAll('assoc');
+            
+            
+        }
+        
+        
+        $this->set('totalOpenSeats', $totalOpenSeats);
+        $this->set('seatsOpenFilled', $seatsOpenFilled);
+        $this->set('seatsOpenVacant', $seatsOpenVacant);
+        $this->set('totalSCSeats', $totalSCSeats);
+        $this->set('seatsSCFilled', $seatsSCFilled);
+        $this->set('seatsSCVacant', $seatsSCVacant);
+        $this->set('totalSTSeats', $totalSTSeats);
+        $this->set('seatsSTFilled', $seatsSTFilled);
+        $this->set('seatsSTVacant', $seatsSTVacant);
+        $this->set('totalOBCSeats', $totalOBCSeats);
+        $this->set('seatsOBCFilled', $seatsOBCFilled);
+        $this->set('seatsOBCVacant', $seatsOBCVacant);
+        
+        $this->set('programme', $programme);
+        $this->set('programmes', $programmes);
+        $this->set('summaryOpen', $summaryOpen);
+        $this->set('summarySC', $summarySC);
+        $this->set('summaryST', $summaryST);
+        $this->set('summaryOBC', $summaryOBC);
     }
     
     public function printseats() {

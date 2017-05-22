@@ -106,6 +106,7 @@ class CandidatesController extends AppController {
     }
     
     public function seatalloted($id = null) {
+        return null;
         $candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         

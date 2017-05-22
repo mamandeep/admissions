@@ -13,7 +13,7 @@
 
 <!-- Here's where we loop through our $articles query object, printing out article info -->
 
-    <?php foreach ($seats as $seat): ?>
+    <?php foreach ($seats as $seat): //debug($seat);?>
     <tr>
         <td><?= $seat->id ?></td>
         <td>
