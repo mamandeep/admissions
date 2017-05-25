@@ -5,7 +5,7 @@ namespace App\Model\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\Table;
 
-class RegistrationsTable extends UsersTable
+class RegistrationsTable extends Table
 {
     public function initialize(array $config)
     {
@@ -103,7 +103,7 @@ class RegistrationsTable extends UsersTable
                         $password_confirm = $context['data']['password_confirm'];
                         return ($value === $password_confirm);
                     },
-                    'message' => 'The passwords do not match.'
+                    'message' => 'The password and confirm password do not match.'
                 ]
             ]);
         return $validator;

@@ -9,7 +9,7 @@ use \Datetime;
 use DateTimeZone;
 use Cake\Auth\DefaultPasswordHasher;
 
-class RegistrationsController extends UsersController {
+class RegistrationsController extends AppController {
     
     
     public function beforeFilter(Event $event)
@@ -21,10 +21,11 @@ class RegistrationsController extends UsersController {
     public function add()
     {
         $user = $this->Registrations->newEntity();
+        //debug($user);
         if ($this->request->is(['post', 'put'])) {
             //debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
-            debug($user);
+            //debug($user);
             if ($this->Registrations->save($user)) {
                 //$this->Auth->setUser($user->toArray());
                 $this->Flash->success(__('You have successfully registered.'));
@@ -33,9 +34,9 @@ class RegistrationsController extends UsersController {
                     'action' => 'login'
                 ]);
             }
-            $this->Flash->error(__('Unable to register. Contact support.'));
+            $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
         }
-        $this->set('user', $user);
+        $this->set('cucetregister', $user);
     }
     
     public function forgotpasswd()

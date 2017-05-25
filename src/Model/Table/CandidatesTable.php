@@ -95,25 +95,8 @@ class CandidatesTable extends Table
                     'message' => 'State selected is not valid.',
                 ]
             ])
-            ->requirePresence('aadhar_no')
-            ->notEmpty('aadhar_no', 'Please fill this field')
-            ->add('aadhar_no', [
-                'validFormat' => [
-                    'rule' => array('custom', '/^[0-9]{4} [0-9]{4} [0-9]{4}$/i'),
-                    'message' => 'Please enter a valid Aadhar No. (12 digits in format:xxxx xxxx xxxx)',
-                ]
-            ])
-            ->requirePresence('aadhar_no')
-            ->notEmpty('aadhar_no', 'Please fill this field')
-            ->add('aadhar_no', [
-                'validFormat' => [
-                    'rule' => array('custom', '/^[0-9]{4} [0-9]{4} [0-9]{4}$/i'),
-                    'message' => 'Please enter a valid Aadhar No. (12 digits in format:xxxx xxxx xxxx)',
-                ]
-            ])
-            ->requirePresence('aadhar_no')
-            ->notEmpty('aadhar_no', 'Please fill this field')
-            ->add('aadhar_no', [
+            ->allowEmpty('aadhar_no')
+             ->add('aadhar_no', [
                 'validFormat' => [
                     'rule' => array('custom', '/^[0-9]{4} [0-9]{4} [0-9]{4}$/i'),
                     'message' => 'Please enter a valid Aadhar No. (12 digits in format:xxxx xxxx xxxx)',

@@ -5,7 +5,16 @@ namespace App\Model\Entity;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\Entity;
 
-class Registration extends User
+class Registration extends Entity
 {
+    protected $_accessible = [
+        '*' => true,
+        'id' => false
+    ];
     
+    protected function _setPassword($password)
+    {
+        return (new DefaultPasswordHasher())->hash($password);
+        //return $passwordHasher->hash($password);
+    }
 }
