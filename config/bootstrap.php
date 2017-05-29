@@ -224,7 +224,7 @@ if (Configure::read('debug')) {
 Plugin::load('AdminLTE', ['bootstrap' => true, 'routes' => true]);
 
 Configure::write('Theme', [
-    'title' => 'AdminLTE',
+    'title' => 'Central University of Punjab',
     'logo' => [
         'mini' => '<b>A</b>LT',
         'large' => '<b>Admin</b>LTE'

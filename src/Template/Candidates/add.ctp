@@ -9,7 +9,7 @@
     echo $this->Form->create($candidate);
     echo $this->Form->control("id", ['type' => 'hidden']); 
     echo $this->Form->control("user_id", ['type' => 'hidden']); ?>
-<table>
+<table width="100%">
     <tr>
         <td colspan="2"><?php echo $this->Form->control('name', ['label' => 'Name of the Candidate (full name as mentioned on your certificates)', 'maxlength'=>'100']); ?></td>
     </tr>

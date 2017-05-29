@@ -85,7 +85,7 @@ class UsersController extends AppController
         if (isset($user['role']) && $user['role'] === 'student') {
             return $this->redirect([
                         'controller' => 'candidates',
-                        'action' => 'index'
+                        'action' => 'add'
                     ]);
         }
         return $this->redirect($this->Auth->redirectUrl());
@@ -130,10 +130,15 @@ class UsersController extends AppController
         }
         $this->set('user', $user);
     }
+    
+    public function prelogin() {
+        
+    }
 
     public function isAuthorized($user = null) {
         // All users with role as 'exam' can add seats
-        if ($this->request->getParam('action') === 'login' || $this->request->getParam('action') === 'logout') {
+        if ($this->request->getParam('action') === 'login' || $this->request->getParam('action') === 'logout'
+                || $this->request->getParam('action') === 'prelogin') {
             return true;
         }
 

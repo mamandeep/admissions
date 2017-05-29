@@ -102,16 +102,16 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
-        if ($this->Auth->user()) {
+        //if ($this->Auth->user()) {
             $this->viewBuilder()->theme('AdminLTE');
             $this->set('theme', Configure::read('Theme'));
-        }
+        //}
         $this->set('user', $this->Auth->user());
     }
 	
     public function beforeFilter(Event $event)
     {
-        $this->Auth->allow(['logout']);
+        $this->Auth->allow(['prelogin', 'logout']);
     }
 
     public function isAuthorized($user)

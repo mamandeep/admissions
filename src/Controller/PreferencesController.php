@@ -50,6 +50,14 @@ class PreferencesController extends AppController {
         $preferences = $this->Preferences->find('all', ['conditions' => ['Preferences.user_id' => $this->Auth->user('id')],
                                                         'order' => ['Preferences.id' => 'ASC']
                                                                          ])->toArray();
+        $candidate = $this->Preferences->Candidates->find('all', array('fields'     => array('Candidates.id'),
+                                                                        'conditions' => ['Candidates.user_id' => $this->Auth->user('id')]))->first();
+																			
+        if(count($candidate) === 0) {
+            $this->Flash->error(__('Please fill your application form before filling the preferences.'));
+            return $this->redirect(['action' => 'add']);
+        }
+        
         if ($this->request->is(['patch', 'post', 'put'])) {
             if(!$this->checkOrder($this->request->getData())) {
                 $this->Flash->error(__('The preferences selected are not in order.'));

@@ -53,7 +53,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     //$routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
     
     
-    $routes->connect('/', ['controller' => 'users', 'action' => 'login']);
+    $routes->connect('/', ['controller' => 'users', 'action' => 'prelogin']);
     
     $routes->connect('/dashboard', array('controller' => 'seats', 'action' => 'index'));
     $routes->connect('/login', array('controller' => 'users', 'action' => 'login'));
