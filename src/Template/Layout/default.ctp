@@ -31,7 +31,8 @@ $cakeDescription = 'Central University of Punjab';
     <?= $this->Html->css('bootstrap.css'); ?>
     <?= $this->Html->css('font-awesome.css'); ?>
     <?= $this->Html->css('custom.css'); ?>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <?= $this->Html->css('opensans.css'); ?>
+    <!--<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />-->
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
 </head>

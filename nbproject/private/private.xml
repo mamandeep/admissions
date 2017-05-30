@@ -23,9 +23,12 @@
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Controller/CandidatesController.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Layout/register.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
+            <file>file:/C:/xampp/htdocs/admissions/webroot/css/opensans.css</file>
             <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside/user-panel.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
             <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
             <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/webroot/css/skins/skin-blue.css</file>
             <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/meritlist.ctp</file>

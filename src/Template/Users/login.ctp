@@ -1,14 +1,19 @@
-<div class="users form">
 <?= $this->Flash->render() ?>
 <?= $this->Form->create($users); ?>
     <fieldset>
-        <legend><?= __('Please enter your username and password') ?></legend>
-        <?= $this->Form->control('username') ?>
-        <?= $this->Form->control('password') ?>
+        <legend><strong><?= __('Please enter your username and password') ?><strong></legend>
+         <table width="100%">
+            <tr>
+                <td width="30%" class="form-label">Username (e.g. PGXXXXXXXX)</td>
+                <td><?php echo $this->Form->control('username', ['label' => false]) ?></td>
+            </tr>
+            <tr>
+                <td class="form-label">Password</td>
+                <td><?php echo $this->Form->control('password', ['label' => false]); ?></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><?= $this->Form->button(__('Login')); ?></td>
+            </tr>
+        </table>
     </fieldset>
-<?= $this->Form->button(__('Login')); ?>
 <?= $this->Form->end() ?>
-<br/><!--
-<p><?= $this->Html->link('Register', ['controller' => 'registrations', 'action' => 'add']) ?></p>
-<p><?= $this->Html->link('Forgot Password', ['controller' => 'registrations', 'action' => 'forgotpasswd']) ?></p>-->
-</div>

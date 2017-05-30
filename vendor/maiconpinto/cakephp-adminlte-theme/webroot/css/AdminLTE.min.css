@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+@import url(./sanspro.css);
 /*!
  *   AdminLTE v2.3.2
  *   Author: Almsaeed Studio
@@ -4947,5 +4947,12 @@ table.text-center th {
     font-size: 28px;
     font-weight: bold;
     color: white;
+}
+
+.form-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    padding-left: 10%;
 }
 
