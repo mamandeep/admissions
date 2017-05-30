@@ -26,15 +26,21 @@ class RegistrationsController extends AppController {
             //debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
             //debug($user);
-            if ($this->Registrations->save($user)) {
-                //$this->Auth->setUser($user->toArray());
-                $this->Flash->success(__('You have successfully registered.'));
-                return $this->redirect([
-                    'controller' => 'users',
-                    'action' => 'login'
-                ]);
+            try {   
+                if ($this->Registrations->save($user)) {
+                    //$this->Auth->setUser($user->toArray());
+                    $this->Flash->success(__('You have successfully registered.'));
+                    return $this->redirect([
+                        'controller' => 'users',
+                        'action' => 'login'
+                    ]);
+                }
+            } catch (\Exception $e) {
+                    $this->Flash->error(__('Unable to register. Please check the entered applicant ID.'));
             }
-            $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
+            if(!empty($user->errors())) {
+                $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
+            }
         }
         $this->set('cucetregister', $user);
     }

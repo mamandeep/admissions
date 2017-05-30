@@ -4937,10 +4937,25 @@ table.text-center th {
     text-align: center;
 }
 
+#subDiv2 table {
+    border: none;
+}
+td.navTopHeaderFirst{
+    height: auto;
+    vertical-align: top;
+    border: none;
+}
+
 .navTopHeaderFirst {
     font-size: 48px;
     font-weight: bold;
     color: white;
+}
+
+td.navTopHeaderSecond{
+    height: auto;
+    vertical-align: top;
+    border: none;
 }
 
 .navTopHeaderSecond{

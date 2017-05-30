@@ -42,9 +42,6 @@
         <td><?php echo $this->Form->control('aadhar_no', ['label' => false, 'maxlength'=>'100']); ?></td>
     </tr>
     <tr>
-        <td colspan="4"><br/></td>
-    </tr>
-    <tr>
         <td colspan="4"><label>Details of Qualifying Examination: </label></td>
     </tr>
     <tr>
@@ -64,8 +61,8 @@
         <td colspan="3"><?php echo $this->Form->control('qualif_total_marks', ['label' => false, 'maxlength'=>'100']); ?></td>
     </tr>
     <tr>
-        <td colspan="1" class="form-label">If you are a candidate for M.Tech./M.Pharm. and have valid GATE/GPAT, select 'Yes' and fill the details, otherwise select 'No'.</td>
-        <td colspan="3"><?php echo $this->Form->control('valid_gate_gpat', ['label' => false, 'empty' => ['select' => 'Select'],  'options' => ['yes' => 'Yes', 'no' => 'No'], 'type' => 'select' , 'id' => "id_validggp", 'maxlength'=>'100']); ?></td>
+        <td colspan="3"><label>If you are a candidate for M.Tech./M.Pharm. and have valid GATE/GPAT, select 'Yes' and fill the details, otherwise select 'No'.</label></td>
+        <td colspan="1"><?php echo $this->Form->control('valid_gate_gpat', ['label' => false, 'empty' => ['select' => 'Select'],  'options' => ['yes' => 'Yes', 'no' => 'No'], 'type' => 'select' , 'id' => "id_validggp", 'maxlength'=>'100']); ?></td>
     </tr>
     <tr>
         <td class="form-label">Examination</td>
