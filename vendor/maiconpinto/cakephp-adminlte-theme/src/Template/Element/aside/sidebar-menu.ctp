@@ -99,7 +99,7 @@ if (file_exists($file)) {
             </a>
             <ul class="treeview-menu">
                 <li><a href="<?php echo $this->Url->build('/candidates/add/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Application Form</a></li>
-                <li><a href="<?php echo $this->Url->build('/uploadfiles/index/' . $user['id']); ?>"><i class="fa fa-circle-o"></i>Upload Scorecard (Not Compulsory)</a></li>
+                <!--<li><a href="<?php echo $this->Url->build('/uploadfiles/index/' . $user['id']); ?>"><i class="fa fa-circle-o"></i>Upload Scorecard (Not Compulsory)</a></li>-->
                 <li><a href="<?php echo $this->Url->build('/preferences/add/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Add Preference</a></li>
                 <li><a href="<?php echo $this->Url->build('/seats/lockseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Lock Seat</a></li>
                 <li><a href="<?php echo $this->Url->build('/payments/submitfee/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Submit Fee</a></li>

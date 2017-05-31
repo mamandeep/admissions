@@ -21,6 +21,7 @@ td {
     vertical-align: bottom;
 }
 </style>
+<php if(isset($submitFeeOpen) && $submitFeeOpen === true) { ?>
 <div style="font-size: 16px; font-weight: bold;">Fee submission for Allocated Programme</div>
 <div>Based on the choices locked by the candidates and individual merit lists prepared on the basis of these choices, your status is as following:</div>
 <?php if(empty($seatAlloted['programme'])) { ?>
@@ -68,3 +69,6 @@ td {
             //$('#programme_id').change();
         });
 </script>
+<php } else { ?>
+<div>Submit Fee is closed at this time.</div>
+<php } ?>

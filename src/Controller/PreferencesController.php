@@ -57,8 +57,8 @@ class PreferencesController extends AppController {
             $this->Flash->error(__('Please fill your application form before filling the preferences.'));
             return $this->redirect(['action' => 'add']);
         }
-        
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        $flag = $this->isPreferenceFillingOpen();
+        if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
             if(!$this->checkOrder($this->request->getData())) {
                 $this->Flash->error(__('The preferences selected are not in order.'));
                 return $this->redirect(['action' => 'add']);
@@ -112,6 +112,9 @@ class PreferencesController extends AppController {
             
             $this->Flash->error(__('Unable to save your preferences.'));
         }
+        else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
+            $this->Flash->error(__('Preference filling is closed at this time.'));
+        }
         if(count($preferences) == 0) {
             $preferences = [];
             $preferences[0] = $this->Preferences->newEntity();
@@ -144,19 +147,22 @@ class PreferencesController extends AppController {
         $stmt = $conn->execute($query_string);
         $testpapers = $stmt ->fetchAll('assoc');                                           
         $this->set('candidate', $candidate);
-        $query_string = 'select t1.id as testpaper_id, u1.id as user_id, c2.vTestPaperCode as cucet_papercode,
-                        c2.Part_A as cucet_marks_A, c2.Part_B as cucet_marks_B, c2.Marks as cucet_total_marks 
-                        from candidates as c1
-                        inner join users as u1
-                        on c1.user_id = u1.id
-                        inner join cucets as c2
-                        on u1.username = c2.ApplicationID
-                        inner join testpapers as t1
-                        on t1.code = c2.vTestPaperCode
-                        where u1.id = ' . $this->Auth->user('id') . '
-                        group by c2.vTestPaperCode';
-        $stmt = $conn->execute($query_string);
-        $cucetdata = $stmt->fetchAll('assoc');
+        $cucetdata = [];
+        if($flag === true) {
+            $query_string = 'select t1.id as testpaper_id, u1.id as user_id, c2.vTestPaperCode as cucet_papercode,
+                            c2.Part_A as cucet_marks_A, c2.Part_B as cucet_marks_B, c2.Marks as cucet_total_marks 
+                            from candidates as c1
+                            inner join users as u1
+                            on c1.user_id = u1.id
+                            inner join cucets as c2
+                            on u1.username = c2.ApplicationID
+                            inner join testpapers as t1
+                            on t1.code = c2.vTestPaperCode
+                            where u1.id = ' . $this->Auth->user('id') . '
+                            group by c2.vTestPaperCode';
+            $stmt = $conn->execute($query_string);
+            $cucetdata = $stmt->fetchAll('assoc');
+        }
         $filesTable = TableRegistry::get('Uploadfiles'); 
         $file = $filesTable->find()->where(['Uploadfiles.user_id' => $this->Auth->user('id')])->toArray();
         //debug($file); return null;
@@ -189,6 +195,7 @@ class PreferencesController extends AppController {
     
     public function viewresult()
     {
+        return $this->redirect(['action' => 'add']);
         //debug(); return false;
         //$this->autoRender = false;
         $testpaperId = $this->request->query['id'];
@@ -210,6 +217,7 @@ class PreferencesController extends AppController {
     }
     
     public function edit($id = null) {
+        return $this->redirect(['action' => 'add']);
         $preference = $this->Preferences->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $preference = $this->Preferences->patchEntity($preference, $this->request->getData());
@@ -226,6 +234,7 @@ class PreferencesController extends AppController {
     }
 
     public function delete($id) {
+        return $this->redirect(['action' => 'add']);
         $this->request->allowMethod(['post', 'delete']);
 
         $preference = $this->Preferences->get($id);

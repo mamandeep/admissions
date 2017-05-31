@@ -8,6 +8,7 @@ use Cake\ORM\TableRegistry;
 use \Datetime;
 use DateTimeZone;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Datasource\ConnectionManager;
 
 class RegistrationsController extends AppController {
     
@@ -26,14 +27,22 @@ class RegistrationsController extends AppController {
             //debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
             //debug($user);
-            try {   
-                if ($this->Registrations->save($user)) {
+            $conn = ConnectionManager::get('default');
+            $query_string = 'select ApplicationID from cucets where ApplicationID = \'' . $user['username'] . '\'';
+            $stmt = $conn->execute($query_string);
+            $applicationID = $stmt->fetchAll('assoc');
+            //debug($applicationID); return null;
+            try {
+                if ($this->Registrations->save($user) && count($applicationID) === 1) {
                     //$this->Auth->setUser($user->toArray());
                     $this->Flash->success(__('You have successfully registered.'));
                     return $this->redirect([
                         'controller' => 'users',
                         'action' => 'login'
                     ]);
+                }
+                else if(count($applicationID) === 0) {
+                    $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
                 }
             } catch (\Exception $e) {
                     $this->Flash->error(__('Unable to register. Please check the entered applicant ID.'));

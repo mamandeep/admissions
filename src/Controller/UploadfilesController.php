@@ -16,6 +16,15 @@ class UploadfilesController extends AppController
     }
     
     public function index() {
+        $flag = $this->isPreferenceFillingOpen();
+        if(!$flag) {
+            $this->Flash->error(__('The uploading of files is closed at this time.'));
+            $this->set('lockseatOpen', false);
+            $this->redirect(['controller' => 'candidates', 'action' => 'add']);
+        }
+        else {
+            $this->set('lockseatOpen', true);
+        }
         //debug(Inflector::singularize('upload_files')); debug(Inflector::camelize(Inflector::singularize($this->request->params['controller'])));
         $existingFiles = $this->Uploadfiles->find('all')
                                    ->where(['Uploadfiles.user_id' => $this->Auth->user('id')])

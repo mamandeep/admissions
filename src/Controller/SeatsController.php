@@ -23,6 +23,10 @@ class SeatsController extends AppController {
     }
 
     public function index() {
+        if(!isLockingSeatOpen()) {
+            $this->Flash->error(__('The locking seat is closed.'));
+        }
+        return $this->redirect(['action' => 'lockseat']);
         $seats = $this->Seats->find('all', ['contain' => ['Programmes' , 'Categories']]);
         $this->set('seats', $seats);
         $cocs = \Cake\ORM\TableRegistry::get('Cocs');
@@ -35,6 +39,10 @@ class SeatsController extends AppController {
     }
 
     public function view($id) {
+        if(!isLockingSeatOpen()) {
+            $this->Flash->error(__('The locking seat is closed.'));
+        }
+        return $this->redirect(['action' => 'lockseat']);
         $seat = $this->Seats->get($id);
         $this->set(compact('seat'));
     }
@@ -56,6 +64,10 @@ class SeatsController extends AppController {
     }
 
     public function add() {
+        if(!isLockingSeatOpen()) {
+            $this->Flash->error(__('The locking seat is closed.'));
+        }
+        return $this->redirect(['action' => 'lockseat']);
         $seat = $this->Seats->newEntity();
         if ($this->request->is('post')) {
             $seat = $this->Seats->patchEntity($seat, $this->request->getData());
@@ -81,6 +93,10 @@ class SeatsController extends AppController {
     }
 
     public function edit($id = null) {
+        if(!isLockingSeatOpen()) {
+            $this->Flash->error(__('The locking seat is closed.'));
+        }
+        return $this->redirect(['action' => 'lockseat']);
         $seat = $this->Seats->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $seat = $this->Bookmarks->patchEntity($seat, $this->request->getData());
@@ -96,6 +112,10 @@ class SeatsController extends AppController {
     }
 
     public function delete($id) {
+        if(!isLockingSeatOpen()) {
+            $this->Flash->error(__('The locking seat is closed.'));
+        }
+        return $this->redirect(['action' => 'lockseat']);
         $this->request->allowMethod(['post', 'delete']);
 
         $seat = $this->Seats->get($id);
@@ -106,6 +126,14 @@ class SeatsController extends AppController {
     }
 
     public function lockseat($AuthId = null) {
+        $flag = $this->isLockingSeatOpen();
+        if(!$flag) {
+            $this->Flash->error(__('The locking of seat is closed at this time.'));
+            $this->set('lockseatOpen', false);
+        }
+        else {
+            $this->set('lockseatOpen', true);
+        }
         //$this->request->allowMethod(['post', 'delete']);
         $lockseatsTable = TableRegistry::get('Lockseats');
         $rankingsTable = TableRegistry::get('Rankings');
@@ -118,7 +146,8 @@ class SeatsController extends AppController {
             return $this->redirect(['action' => 'lockseat']);
         }
         $lockedSeat = (count($lockedSeat) === 0) ? $lockseatsTable->newEntity() : $lockedSeat[0];
-        if ($this->request->is(['patch', 'post', 'put']) && !empty($this->request->data()['selected_course'])) {
+        
+        if ($this->request->is(['patch', 'post', 'put']) && !empty($this->request->data()['selected_course']) && $flag === true) {
             //debug($this->request->data()); return null;
             $lockSeatData = [];
             $eligible_for_open = '';
@@ -183,6 +212,9 @@ class SeatsController extends AppController {
         }
         else if($this->request->is(['patch', 'post', 'put']) && empty($this->request->data()['selected_course'])){
             $this->Flash->error('Please select the radio button under "Lock Seat" and then submit.');
+        }
+        else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
+            $this->Flash->error(__('The locking of seats is closed at this time.'));
         }
         
         
@@ -645,9 +677,10 @@ class SeatsController extends AppController {
             return true;
         }
         
-        if ($this->request->getParam('action') === 'index') {
+        /*if ($this->request->getParam('action') === 'index') {
             return true;
-        }
+        }*/
+        
         if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'lockseat'
                 || $this->request->getParam('action') === 'submitfee' || $this->request->getParam('action') === 'seatalloted')) {
             return true;

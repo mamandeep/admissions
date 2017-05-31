@@ -4,6 +4,7 @@ namespace App\Model\Table;
 use Cake\Validation\Validator;
 use Cake\ORM\Table;
 use Cake\Network\Session;
+use DateTime;
 
 class CandidatesTable extends Table
 {
@@ -35,8 +36,30 @@ class CandidatesTable extends Table
             ->notEmpty('dob', 'Please fill this field')
             ->add('dob', [
                 'validFormat' => [
-                    'rule' => array('custom', '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/i'),
+                    'rule' => array('custom', '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/'),
                     'message' => 'Please enter a valid date (DD/MM/YYYY).',
+                ],
+                'checkallpresent' => [
+                    'rule' => function ($value, $context) {
+                        //debug($value); debug($context); debug($sessionData);
+                        $pattern = '/^[0-9]{2}\/[0-9]{2}\/[0-9]{4}$/';
+                        $valid = preg_match($pattern, $value);
+                        if($valid === false || $valid === 0) {
+                            return true;
+                        }
+                        $age = 0;
+                        $from = new DateTime(date("Y-m-d", strtotime($value)));
+                        $to   = new DateTime('today');
+                        $age = $to->diff($from)->y;
+                        //debug($value); debug($age); return false;
+                        if($age >= 18) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    },
+                    'message' => 'The minimum age requirement is not met.'
                 ]
             ])
             ->requirePresence('cucet_roll_no')
@@ -118,6 +141,14 @@ class CandidatesTable extends Table
                         return true;
                     },
                     'message' => 'Please fill the fields of Marks Obtained and Total Marks appropriately.'
+                ]
+            ])
+            ->requirePresence('qualif_degree')
+            ->notEmpty('qualif_degree', 'Please fill this field')
+            ->add('qualif_degree', [
+                'validFormat' => [
+                    'rule' => array('custom', '/^B.A.|B.Com.|B.Pharm.|B.Sc.|B.Tech.\/B.E.|BBA|LL.B.|Other$/'),
+                    'message' => 'Please select valid Qualifying Degree.',
                 ]
             ])
             ->requirePresence('valid_gate_gpat')

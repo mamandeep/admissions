@@ -45,8 +45,21 @@
         <td colspan="4"><label>Details of Qualifying Examination: </label></td>
     </tr>
     <tr>
-        <td class="form-label">Degree (e.g. B.Sc./B.A/)</td>
-        <td><?php echo $this->Form->control('qualif_degree', ['label' => false, 'maxlength'=>'100', 'placeholder' => 'B.Sc./B.A/']); ?></td>
+        <td class="form-label">Degree</td>
+        <td><?php echo $this->Form->control('qualif_degree', [
+            'label' => false, 
+            'maxlength'=>'100', 
+            'empty' => ['select' => 'Select'],  
+            'options' => ['B.A.' => 'B.A.',
+                          'B.Com.' => 'B.Com.',
+                          'B.Pharm.' => 'B.Pharm.',
+                          'B.Sc.' => 'B.Sc.',
+                          'B.Tech./B.E.' => 'B.Tech./B.E.',
+                          'BBA' => 'BBA',
+                          'LL.B.' => 'LL.B.',
+                          'Other' => 'Other'
+                         ], 
+            'type' => 'select' , 'id' => "id_qualif_degree" ]); ?></td>
         <td class="form-label">Major Subjects</td>
         <td><?php echo $this->Form->control('qualif_maj_subjects', ['label' => false, 'maxlength'=>'100']); ?></td>
     </tr>
@@ -104,5 +117,25 @@
         autoclose: true,
       };
       date_input.datepicker(options);
+      
+      $('select[name=valid_gate_gpat]').change(function(){
+          if($(this).val() == "no") {
+              $('select[name=ggp_exam]').attr('disabled', true);
+              $('input[name=ggp_roll_no]').attr('disabled', true);
+              $('input[name=ggp_year_passing]').attr('disabled', true);
+              $('input[name=ggp_marksobtained_rank]').attr('disabled', true);
+          }
+          else if($(this).val() == "yes") {
+              $('select[name=ggp_exam]').attr('disabled', false);
+              $('input[name=ggp_roll_no]').attr('disabled', false);
+              $('input[name=ggp_year_passing]').attr('disabled', false);
+              $('input[name=ggp_marksobtained_rank]').attr('disabled', false);
+          }
+          else {
+              
+          }
+      });
+      
+      $('select[name=valid_gate_gpat]').change();
     })
 </script>

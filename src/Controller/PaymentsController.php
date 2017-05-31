@@ -21,12 +21,14 @@ class PaymentsController extends AppController {
     }
 
     public function index() {
+        return $this->redirect(['action' => 'submitfee']);
         // List of all payments
         $payments = $this->Payments->find('all');
         $this->set('payments', $payments);
     }
 
     public function view($id) {
+        return $this->redirect(['action' => 'submitfee']);
         // View a particular payment
         $payment = $this->Payments->get($id);
         $this->set(compact('paymentat'));
@@ -49,6 +51,7 @@ class PaymentsController extends AppController {
     }
 
     public function add() {
+        return $this->redirect(['action' => 'submitfee']);
         $payment = $this->Payments->newEntity();
         if ($this->request->is('post')) {
             $payment = $this->Payments->patchEntity($payment, $this->request->getData());
@@ -67,6 +70,7 @@ class PaymentsController extends AppController {
     }
     
     public function submitfee() {
+        $flag = $this->isSubmitFeeOpen();
         $candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         
@@ -86,7 +90,7 @@ class PaymentsController extends AppController {
                         order by s1.created desc';
         $stmt = $conn->execute($query_string);
         $seatAlloted = $stmt->fetchAll('assoc');
-        if($this->request->is(['post', 'put'])) {
+        if($this->request->is(['post', 'put']) && $flag === true) {
             $session = $this->request->session();
             $token = $session->read('feetoken');
             //debug($this->request->data()); return null;
@@ -94,6 +98,9 @@ class PaymentsController extends AppController {
                 $this->redirect(['action' => 'pay']);
             }
             // Flash error
+        }
+        else if($this->request->is(['post', 'put']) && $flag === false) {
+            $this->Flash->error(__('Submission of fee is closed at this time.'));
         }
         $token = uniqid();
         $session = $this->request->session();
@@ -124,7 +131,6 @@ class PaymentsController extends AppController {
     }
     
     public function pay() {
-        
         $session = $this->request->session();
         $programe_id = intval($session->read('programme_id_for_fee'));
         //debug($programe_id);
@@ -309,6 +315,7 @@ class PaymentsController extends AppController {
     }
     
     public function cancelseat() {
+        $flag = $this->isSubmitFeeOpen();
         $candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         
@@ -318,7 +325,7 @@ class PaymentsController extends AppController {
         $cancelseatsTable = TableRegistry::get('Cancelseats');
         $cancelseat = $cancelseatsTable->find('all')->where(['Cancelseats.user_id' => $this->Auth->user('id')])->toArray();
         $cancelseat = ((count($cancelseat) > 0) ? $cancelseat[0] : $cancelseatsTable->newEntity());
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
             $conn->begin();
             //debug($this->request->data());
             $cancelseat = $cancelseatsTable->patchEntity($cancelseat, $this->request->data());
@@ -337,6 +344,9 @@ class PaymentsController extends AppController {
                 $this->Flash->error(__('There was an error in cancellation request of the seat. Please contact support.'));
             }
             
+        }
+        else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
+            $this->Flash->error(__('Cancellation of seat is closed at this time.'));
         }
         
         $query_string = 'select u1.username as applicant_id, c1.name as c_name, c1.f_name as f_name,

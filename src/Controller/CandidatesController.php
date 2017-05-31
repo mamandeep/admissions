@@ -55,7 +55,8 @@ class CandidatesController extends AppController {
             return $this->redirect(['action' => 'add']);
         }
         $candidate = (count($candidate) === 1) ? $candidate[0] : $this->Candidates->newEntity();
-        if ($this->request->is(['patch', 'post', 'put'])) {
+        $flag = $this->isFormFillingOpen();
+        if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
             $candidate = $this->Candidates->patchEntity($candidate, $this->request->getData());
             $candidate->user_id = $this->Auth->user('id');
             if ($this->Candidates->save($candidate)) {
@@ -63,6 +64,9 @@ class CandidatesController extends AppController {
                 return $this->redirect(['action' => 'add']);
             }
             $this->Flash->error(__('Unable to save your application form.'));
+        }
+        else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
+            $this->Flash->error(__('Filling of application form is closed at this time.'));
         }
         $this->set('candidate', $candidate);
         $categories = $this->Candidates->Categories->find('all')
@@ -82,6 +86,7 @@ class CandidatesController extends AppController {
     }
 
     public function edit($id = null) {
+        return $this->redirect(['action' => 'add']);
         $candidate = $this->Candidates->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $candidate = $this->Candidates->patchEntity($candidate, $this->request->getData());
@@ -95,7 +100,8 @@ class CandidatesController extends AppController {
         $this->set(compact('candidate'));
     }
 
-    public function delete($id) {
+    public function delete($id) {        
+        return $this->redirect(['action' => 'add']);
         $this->request->allowMethod(['post', 'delete']);
 
         $seat = $this->Seats->get($id);
@@ -106,7 +112,7 @@ class CandidatesController extends AppController {
     }
     
     public function seatalloted($id = null) {
-        return null;
+        return $this->redirect(['action' => 'add']);
         $candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         
@@ -135,8 +141,6 @@ class CandidatesController extends AppController {
         $this->set('allocatedSeats', $allocatedSeats);
     }
     
-    public function submitfee() {
-    }
 
     public function isAuthorized($user = null) {
         // All users with role as 'exam' can add seats seatalloted

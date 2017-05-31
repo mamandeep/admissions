@@ -21,6 +21,7 @@ td {
     vertical-align: bottom;
 }
 </style>
+<?php if(isset($lockseatOpen) && $lockseatOpen === true) { ?>
 <label style="font-size: 16px; text-align: center;">Choice Lock-Selection of One Programme for Locking</label>
 <div>Based on the information provided by you and all the other candidates in the counselling form, following is your merit position in the individual merit lists of the programmes already selected by you:</div>
 <ul>
@@ -28,9 +29,9 @@ td {
           $category = 0;
           $category_name = '';
         foreach ($rankings as $seat): 
-        echo "<li>\"" . $seat->rank . "\" place in " .  $seat->programme->name . " - " . $seat->category->type . " Category </li>"; 
+        echo "<li><strong>\"" . $seat->rank . "\" place</strong> in <strong>" .  $seat->programme->name . "</strong> - <strong>" . $seat->category->type . "</strong> Category </li>"; 
         if(!$displayChoice) {
-            $displayChoice = (strcmp($seat->category->type, "SC") === 0 || strcmp($seat->category->type, "ST") === 0 || strcmp($seat->category->type, "OBC") === 0  ) ? true : false;
+            $displayChoice = (strcmp($seat->category->id, "3") === 0 || strcmp($seat->category->id, "4") === 0 || strcmp($seat->category->id, "5") === 0  ) ? true : false;
             $category_name = ($displayChoice === true) ? $seat->category->type : '';
             $category = ($displayChoice === true) ? $seat->candidate_category : 0;
         }
@@ -40,7 +41,8 @@ td {
 <label>> Each candidate can <span style="text-decoration: underline;">Lock only One Programme</span> in each round and his/her name will not be considered in other programmes in merit lists of that round. In the next round, she/he can again lock same/different preference and so on.</label>
 <?php 
      echo $this->Form->create($lockedSeat, [
-        'url' => ['controller' => 'seats', 'action' => 'lockseat']
+        'url' => ['controller' => 'seats', 'action' => 'lockseat'],
+        'id' => 'lockseat_form'
      ]); 
 ?>
 <table>
@@ -56,7 +58,7 @@ td {
 <!-- Here's where we loop through our $articles query object, printing out article info -->
 
     <?php   $i=0;foreach ($rankings as $seat): 
-            if($displayChoice === true && strcmp($seat->category->type, "Open") === 0) { 
+            if($displayChoice === true && strcmp($seat->category->id, "1") === 0) { 
                 $openRankId = $seat->id;
                 continue;
             }?>
@@ -68,7 +70,7 @@ td {
                     $options, [
                     'hiddenField' => false ]
                 ); ?></td>
-        <td> 
+        <td> <input type="hidden" name="prog_name" value="<?= $seat->programme->name ?>"/>
             <?= $seat->programme->name ?>
         </td>
         <?php if($displayChoice === true) { ?>
@@ -101,16 +103,44 @@ criteria without relaxation, his/her seat will be automatically cancelled.</div>
 <?php echo $this->Form->end(); ?>
 <br/>
 <div>
-    <p>The currently locked seat is<p>
+    <p>The currently locked seat is:- 
     <?php foreach ($rankings as $seat) {
         //debug($seat->id);debug($lockedSeatRankId);
-        if(isset($lockedSeatRankId) && $seat->id === intval($lockedSeatRankId)) { ?>
-            <ul>
-                <li>Programme Name : <?php echo $seat->programme->name; ?></li>
-                <li>Category : <?php echo $seat->category->type; ?></li>
-                <li>Merit in Programme : <?php echo $seat->rank; ?></li>
-            </ul>
-        <?php  } 
+        $str = '';
+        if(isset($lockedSeatRankId) && $seat->id === intval($lockedSeatRankId)) { 
+                $str .= "Programme Name: <strong>" . $seat->programme->name . "</strong>";
+                $str .= ";Category: <strong>" . $seat->category->type . "</strong>";
+                $str .= ";Merit in Programme: <strong>" . $seat->rank . "</strong>";
+        } 
     }
-?>  
+    echo $str;
+?>  </p>
 </div>
+<script>
+$(document).ready(function(){
+    
+    
+    $("#lockseat_form").submit(function(e){
+        var prog_name = '';
+        var eligible_for_open = '';
+        var category_pref = '';
+        $('input[name=selected_course]:checked').closest('tr').find('input[name=prog_name]').each(function(){
+            prog_name = $(this).val();
+        });
+        $('input[name=selected_course]:checked').closest('tr').find('select[name=eligible_for_open\\[\\]]').each(function(){
+            eligible_for_open = $(this).val();
+        });
+        $('input[name=selected_course]:checked').closest('tr').find('select[name=category_pref\\[\\]] :selected').each(function(){
+            category_pref = $(this).text();
+        });
+        if (!confirm("The details selected by you for locking are: " + prog_name + " in " + category_pref + " Category. Kindly confirm."))
+        {
+            e.preventDefault();
+            return;
+        }
+    });
+});
+</script>
+<?php } else { ?>
+ <div>Lock Seat is closed at this time.</div>
+<?php } ?>
