@@ -21,36 +21,58 @@ class RegistrationsController extends AppController {
     
     public function add()
     {
-        $user = $this->Registrations->newEntity();
+	$flag = $this->isFormFillingOpen();      
+	$user = $this->Registrations->newEntity();
         //debug($user);
-        if ($this->request->is(['post', 'put'])) {
+        if ($this->request->is(['post', 'put']) && $flag === true) {
             //debug($this->request->getData());
             $user = $this->Registrations->patchEntity($user, $this->request->getData());
             //debug($user);
             $conn = ConnectionManager::get('default');
-            $query_string = 'select ApplicationID from cucets where ApplicationID = \'' . $user['username'] . '\'';
+            $match = preg_match('/^PG17[0-9]{6}$/', $user['username']);
+	    //debug($match); 
+	    $username = "";
+	    if($match === 1) {
+	        $username = $user['username'];		
+	    }
+	    //debug($username);
+            $query_string = 'select ApplicationID from cucets where ApplicationID = \'' . $username . '\'';
             $stmt = $conn->execute($query_string);
             $applicationID = $stmt->fetchAll('assoc');
-            //debug($applicationID); return null;
-            try {
-                if ($this->Registrations->save($user) && count($applicationID) === 1) {
-                    //$this->Auth->setUser($user->toArray());
-                    $this->Flash->success(__('You have successfully registered.'));
-                    return $this->redirect([
-                        'controller' => 'users',
-                        'action' => 'login'
-                    ]);
-                }
-                else if(count($applicationID) === 0) {
-                    $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
-                }
-            } catch (\Exception $e) {
-                    $this->Flash->error(__('Unable to register. Please check the entered applicant ID.'));
-            }
+	    $existing = $this->Registrations->find('all', ['conditions' => ['username' => $username ]])->toArray();
+	    //debug($applicationID); debug($existing); 
+	    if(count($existing) === 1) {
+		$this->Flash->success(__('You have already registered successfully. Please login using your Applicant ID (PG17xxxxxx) and Password.'));
+		return $this->redirect([
+				'controller' => 'users',
+				'action' => 'login'
+			    ]);
+	    }
+	    else if(count($applicationID) === 1) {
+		    //debug($applicationID); return null;
+		    try {
+			if ($this->Registrations->save($user)) {
+			    //$this->Auth->setUser($user->toArray());
+			    $this->Flash->success(__('You have successfully registered.'));
+			    return $this->redirect([
+				'controller' => 'users',
+				'action' => 'login'
+			    ]);
+			}
+			else if(count($applicationID) === 0) {
+			    $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
+			}
+		    } catch (\Exception $e) {
+			    $this->Flash->error(__('Unable to register. Please check the entered applicant ID/Email ID.'));
+		    }
+	    }
             if(!empty($user->errors())) {
                 $this->Flash->error(__('Unable to register. Please correct the field values or contact Support.'));
             }
         }
+	else if($this->request->is(['post', 'put']) && $flag === false) {
+		$this->Flash->error(__('Registration is closed at this time.'));
+	}
         $this->set('cucetregister', $user);
     }
     
@@ -58,17 +80,28 @@ class RegistrationsController extends AppController {
     {
         if($this->request->is(['post'])) {
             $email = $this->request->data['email'];
-            if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if(!filter_var(trim($email), FILTER_VALIDATE_EMAIL)) {
                 $this->Flash->error(__('Email Id is not in correct format.'));
-                return $this->redirect(['controller' => 'registrations','action' => 'forgotPassword']);
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
             }
             
             $usersTable = TableRegistry::get('Users'); 
-            $user = $usersTable->find()->where(['email' => $email ])->first();
-
+            $user = $usersTable->find()->where(['email' => $email ])->toArray();
+			//debug($user); return null;
+			if(count($user) > 1) {
+				$this->Flash->error(__('Multiple registrations found with same Email ID. Please contact support.'));
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
+			}
+			else if(count($user) === 1) {
+				$user = $user[0];
+			}
+			else {
+				$user = false;
+			}
+			
             if (!$user) {
-                $this->Flash->error(__('No user with that email found.'));
-                return $this->redirect(['controller' => 'registrations','action' => 'forgotPassword']);
+                $this->Flash->error(__('No registration found with the given Email ID.'));
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
            }
            $session = $this->request->session();
            $session->write('userId',$user['id']);
@@ -81,21 +114,21 @@ class RegistrationsController extends AppController {
             
             if(!$usersTable->save($user)) {
                 $this->Flash->error(__('There was an error in generating OTP. Please contact support.'));
-                return $this->redirect(['controller' => 'registrations','action' => 'forgotPassword']);
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
             }            
             $response = "";
-            /*if($this->is_connected()) {
+            if($this->is_connected()) {
                 $response = $this->smsSend($user['mobile'], 'Dear '.$user['first_name'].'! Your One-Time password is: '.$session->read('otp'));
             }
             else {
                 $this->Flash->error(__('OTP could not be sent at this time. Please contact support.'));
-                return $this->redirect(['controller' => 'registrations','action' => 'forgotPassword']);
-            }*/
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
+            }
             
             $user = $usersTable->patchEntity($user, ['otp_response' => $response], ['validate' => false]);
             if(!$usersTable->save($user)) {
                 $this->Flash->error(__('There was an error in sending OTP. Please contact support.'));
-                return $this->redirect(['controller' => 'registrations','action' => 'forgotPassword']);
+                return $this->redirect(['controller' => 'registrations','action' => 'forgotpasswd']);
             }
             $this->Flash->success(__('An OTP has been sent to your Mobile No.'));
             $this->redirect(array('controller' => 'registrations', 'action' => 'changepassword'));   

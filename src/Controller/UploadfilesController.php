@@ -67,11 +67,14 @@ class UploadfilesController extends AppController
     }
     
     public function isAuthorized($user = null) {
+	if(parent::isAuthorized($user)) {
+		return true;
+	}
         // All users with role as 'exam' can add seats
         if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'index')) {
             return true;
         }
 
-        return parent::isAuthorized($user);
+        
     }
 }

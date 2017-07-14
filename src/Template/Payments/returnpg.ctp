@@ -23,6 +23,7 @@ td {
 }
 </style>
 <?php if(isset($paymentStatus) && $paymentStatus == "0") { ?>
+<a href="javascript: window.print();" > PRINT </a>
 <table>
     <tr>
         <td colspan="2">Your payment has been successful.</td>

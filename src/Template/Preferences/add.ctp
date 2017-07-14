@@ -102,15 +102,23 @@ td {
                       //echo $this->Form->control("$count.testpaper_id", ['disabled' => 'disabled', 'label' => false, 'options' => $optionsarr, 'type' => 'select' , 'maxlength' => 10 , 'id' => "{$count}_test_paper_code"]); 
                   } ?></td>
         <td><?php echo $this->Form->control("$count.programme_id", ['label' => false, 'options' => $poptionsarr, 'type' => 'select' , 'maxlength' => 10, 'id' => "{$count}_programmes"]); ?></td>
-        <td><?php echo $this->Form->control("$count.marks_A", ['label' => false, 'maxlength' => 10]) ?></td>
-        <td><?php echo $this->Form->control("$count.marks_B", ['label' => false, 'maxlength' => 10]) ?></td>
-        <td><?php echo $this->Form->control("$count.marks_total", ['label' => false, 'maxlength' => 10]) ?></td>
+        <td><?php echo $this->Form->control("$count.marks_A", ['step' => '0.01', 'label' => false, 'maxlength' => 10]) ?></td>
+        <td><?php echo $this->Form->control("$count.marks_B", ['step' => '0.01', 'label' => false, 'maxlength' => 10]) ?></td>
+        <td><?php echo $this->Form->control("$count.marks_total", ['step' => '0.01', 'label' => false, 'maxlength' => 10]) ?></td>
     </tr>
     <?php } ?>
 </table>
 <?php
     echo $this->Form->button(__('Save Preferences'));
     echo $this->Form->end();
+    echo "<br/><br/>";
+    if(!empty($this->request->session()->read('isUploadRequired')) && $this->request->session()->read('isUploadRequired') === true) {
+	echo $this->Html->link(
+		    'Upload Score Card',
+		    '/uploadfiles/index',
+		    ['class' => 'button btn btn-success']
+	    );
+}
 ?>
 <script>
     window.onload = function(e){ 
@@ -150,7 +158,7 @@ td {
                             }
                         }
                     }
-                    $('#0_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[0]['programme_id']; ?>');
+                    $('#0_programmes').find('option').remove().end().append(optionsStr).val('<?php echo (!empty($preferences[0]['programme_id'])) ? $preferences[0]['programme_id'] : ""; ?>');
             });
         }
         else if (elem.attachEvent) { // IE DOM
@@ -214,7 +222,7 @@ td {
                         }
                     }
                 }
-                $('#1_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[1]['programme_id']; ?>');
+                $('#1_programmes').find('option').remove().end().append(optionsStr).val('<?php echo (!empty($preferences[1]['programme_id'])) ? $preferences[1]['programme_id'] : "0"; ?>');
             });
             $('input[name="1[selected]"]').change(function() {
                 if(this.checked) {
@@ -256,7 +264,7 @@ td {
                                             value = data[i][k].TestpapersProgrammes__programme_id;
                                         }
                                         if(data[i][k].Programmes__name) {
-                                            text = data[i][k].Programmes__name;
+                                  		text = data[i][k].Programmes__name;
                                         }
                                     }
                                     optionsStr += '<option value="' + value + '">' +  text + '</option>';
@@ -310,7 +318,7 @@ td {
                                 }
                             }
                         }
-                    $('#2_programmes').find('option').remove().end().append(optionsStr).val('<?php echo $preferences[2]['programme_id']; ?>');
+                    $('#2_programmes').find('option').remove().end().append(optionsStr).val('<?php echo (!empty($preferences[2]['programme_id'])) ? $preferences[2]['programme_id'] : "0"; ?>');
             });
             $('input[name="2[selected]"]').change(function() {
                 if(this.checked) {

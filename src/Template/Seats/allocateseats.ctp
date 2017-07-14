@@ -40,22 +40,24 @@ td {
 <tr>
 <th>S. No.</th>
 <th>Merit No.</th>
+<th>Total Marks</th>
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
-<th>Preferred Category</th>
 <th>Allocate Seat</th>
 </tr>
 <?php $gcount = 0; $count = 0; foreach($summaryOpen as $candidate) { ?>
 <tr>
     <td><?= $gcount+1; echo $this->Form->hidden('id', [ 'value' => $candidate['programme_id']]); ?></td>
     <td><?= $candidate['merit'] ?></td>
+    <td><?= $candidate['total_marks'] ?></td>
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['c_id']]); ?>
-        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
-    <td><?php $this->Form->hidden('Seatallocation.'.$count.'.id', [ 'value' => '']);
+    <td><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['candidate_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.programme_id', [ 'value' => $candidate['programme_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_category_id', [ 'value' => '1']); ?>
+        <?php //echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?><?php $this->Form->hidden('Seatallocation.'.$count.'.id', [ 'value' => '']);
                 $options = array(array('text' => '' ));
                 echo $this->Form->checkbox(
                     'Seatallocation.' . $count.'.idcheck',
@@ -70,6 +72,7 @@ td {
 <tr>
 <th>S. No.</th>
 <th>Merit No.</th>
+<th>Total Marks</th>
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
@@ -80,11 +83,14 @@ td {
 <tr>
     <td><?= $gcount+1; echo $this->Form->hidden('id', [ 'value' => $candidate['programme_id']]); ?></td>
     <td><?= $candidate['merit'] ?></td>
+    <td><?= $candidate['total_marks'] ?></td>
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['c_id']]); ?>
-        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
+    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['candidate_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.programme_id', [ 'value' => $candidate['programme_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_category_id', [ 'value' => '3']); ?>
+        <?php //echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
     <td><?php $this->Form->hidden('Seatallocation.'.$count.'.id', [ 'value' => '']);
                 $options = array(array('text' => '' ));
                 echo $this->Form->checkbox(
@@ -100,6 +106,7 @@ td {
 <tr>
 <th>S. No.</th>
 <th>Merit No.</th>
+<th>Total Marks</th>
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
@@ -110,11 +117,14 @@ td {
 <tr>
     <td><?= $gcount+1; echo $this->Form->hidden('id', [ 'value' => $candidate['programme_id']]); ?></td>
     <td><?= $candidate['merit'] ?></td>
+    <td><?= $candidate['total_marks'] ?></td>
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['c_id']]); ?>
-        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
+    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['candidate_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.programme_id', [ 'value' => $candidate['programme_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_category_id', [ 'value' => '4']); ?>
+        <?php //echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
     <td><?php $this->Form->hidden('Seatallocation.'.$count.'.id', [ 'value' => '']);
                 $options = array(array('text' => '' ));
                 echo $this->Form->checkbox(
@@ -130,6 +140,7 @@ td {
 <tr>
 <th>S. No.</th>
 <th>Merit No.</th>
+<th>Total Marks</th>
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
@@ -140,11 +151,14 @@ td {
 <tr>
     <td><?= $gcount+1; echo $this->Form->hidden('id', [ 'value' => $candidate['programme_id']]); ?></td>
     <td><?= $candidate['merit'] ?></td>
+    <td><?= $candidate['total_marks'] ?></td>
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['c_id']]); ?>
-        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
+    <td><?= $candidate['c_category_pref'] ?><?php echo $this->Form->hidden('Seatallocation.'.$count.'.candidate_id', [ 'value' => $candidate['candidate_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.programme_id', [ 'value' => $candidate['programme_id']]); ?>
+        <?php echo $this->Form->hidden('Seatallocation.'.$count.'.seat_category_id', [ 'value' => '5']); ?>
+        <?php //echo $this->Form->hidden('Seatallocation.'.$count.'.seat_id', [ 'value' => $candidate['seat_id']]); ?></td>
     <td><?php $this->Form->hidden('Seatallocation.'.$count.'.id', [ 'value' => '']);
                 $options = array(array('text' => '' ));
                 echo $this->Form->checkbox(

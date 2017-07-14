@@ -55,7 +55,7 @@ class PreferencesController extends AppController {
 																			
         if(count($candidate) === 0) {
             $this->Flash->error(__('Please fill your application form before filling the preferences.'));
-            return $this->redirect(['action' => 'add']);
+            return $this->redirect(['controller' => 'candidates', 'action' => 'add']);
         }
         $flag = $this->isPreferenceFillingOpen();
         if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
@@ -91,13 +91,14 @@ class PreferencesController extends AppController {
                 }
                 $preferences[$count] = $preference;
             }
-            //debug($preferences); return null;
+            //debug($preferences); 
             if(!$validationErrosPresent) {
                 try {   
                     foreach($preferences as $preferenceObj) {
-                        if($this->Preferences->save($preferenceObj)) {
+			//debug($preferenceObj->isNew()); 
+                        if($preferenceObj->isNew() && $this->Preferences->save($preferenceObj)) {
                         }
-                        else if($preference->selected == 1) {
+                        else if($preferenceObj->isNew() && $preference->selected == 1) {
                             $allPrefSaved = false;
                         }
                     }
@@ -109,7 +110,7 @@ class PreferencesController extends AppController {
                 $this->Flash->success(__('Your preferences have been saved.'));
                 return $this->redirect(['action' => 'add']);
             }
-            
+            //debug($validationErrosPresent ); debug($allPrefSaved); return null;
             $this->Flash->error(__('Unable to save your preferences.'));
         }
         else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
@@ -148,13 +149,14 @@ class PreferencesController extends AppController {
         $testpapers = $stmt ->fetchAll('assoc');                                           
         $this->set('candidate', $candidate);
         $cucetdata = [];
+	
         if($flag === true) {
             $query_string = 'select t1.id as testpaper_id, u1.id as user_id, c2.vTestPaperCode as cucet_papercode,
-                            c2.Part_A as cucet_marks_A, c2.Part_B as cucet_marks_B, c2.Marks as cucet_total_marks 
+                            c2.Part_A as cucet_marks_A, c2.Part_B as cucet_marks_B, c2.TOTAL_MARKS as cucet_total_marks 
                             from candidates as c1
                             inner join users as u1
                             on c1.user_id = u1.id
-                            inner join cucets as c2
+                            inner join cucet_result as c2
                             on u1.username = c2.ApplicationID
                             inner join testpapers as t1
                             on t1.code = c2.vTestPaperCode
@@ -165,7 +167,7 @@ class PreferencesController extends AppController {
         }
         $filesTable = TableRegistry::get('Uploadfiles'); 
         $file = $filesTable->find()->where(['Uploadfiles.user_id' => $this->Auth->user('id')])->toArray();
-        //debug($file); return null;
+        //debug($this->Auth->user('id')); return null;
         $session = $this->request->session();
         $session->write('papercodemapping', $testpapers);
         $session->write('cucetdata', $cucetdata);
@@ -245,6 +247,7 @@ class PreferencesController extends AppController {
     }
 
     public function isAuthorized($user = null) {
+	//return parent::isAuthorized($user);
         // All users with role as 'exam' can add seats
         if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'add' 
                 || $this->request->getParam('action') === 'index' || $this->request->getParam('action') === 'viewresult')) {
@@ -259,7 +262,7 @@ class PreferencesController extends AppController {
             }
         }
 
-        return parent::isAuthorized($user);
+        
     }
 
 }

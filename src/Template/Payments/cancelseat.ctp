@@ -6,9 +6,21 @@
 <div class="form-container">
 <h1>Cancellation of Seat and Refund of Fee</h1>
 <?php
+	$options = [];
+	//debug($programmes_alloted);
+        foreach($programmes_alloted as $p1) {
+		$options[$p1['p_id']] = $p1['p_name'];
+	}
+    echo $this->Form->create($programme);
+    echo $this->Form->control("pid", ['label' => 'Select Programme: ',  'options' => $options, 'empty' => ['select' => 'Select'], 'type' => 'select' , 'id' => "programme_id", 'maxlength'=>'100']); 
+    echo $this->Form->end();
+
+if(isset($userData) && count($userData) > 0) { 
     echo $this->Form->create($cancelseat);
     echo $this->Form->input('id', ['type' => 'hidden']);
     echo $this->Form->input('fee_id', ['type' => 'hidden', 'value' => $userData['fee_id']]);
+    echo $this->Form->input('seat_id', ['type' => 'hidden', 'value' => $userData['seat_id']]);
+    echo $this->Form->input('pid', ['type' => 'hidden', 'value' => $programme['id']]);
     ?>
 <label>Applicant ID CUCET: <?php echo $userData['applicant_id'];?></label>
 <table>
@@ -27,10 +39,6 @@
     <tr>
         <td>Mobile Number</td>
         <td><?php echo $userData['mobile']; ?></td>
-    </tr>
-    <tr>
-        <td>Email ID</td>
-        <td><?php echo $userData['email']; ?></td>
     </tr>
     <tr>
         <td>Email ID</td>
@@ -57,7 +65,12 @@
         <td><?php echo $userData['amount']; ?></td>
     </tr>
 </table>
-<label>It is requested that my seat may be cancelled and refund of the fee be sent in the following Account detail: </label>
+<ul>
+<li><strong style="font-size: 14px; color: red">Please note that once the Seat is cancelled you will not be considered for the same Programme.</strong></li>
+</ul>
+<br/>
+<div><strong>It is requested that my seat may be cancelled and refund of the fee be sent in the following Account detail: </strong></div>
+
 <table>
     <tr>
         <td>Account Holder Name</td>
@@ -87,12 +100,19 @@
 I hereby certify that, I opt to cancel my seat and request to refund the fee as per the UGC guidelines given in the University Prospectus.
 </label>
 </div>
-<?php echo $this->Form->button(__('Submit Request')); 
-      echo $this->Form->end();  ?>
+<?php if(isset($seatCancelledAlready) && $seatCancelledAlready === false) {
+	echo $this->Form->button(__('Submit Request'));
+      } 
+      echo $this->Form->end(); 
+} ?>
 </div>
 
 <script>
     $(document).ready(function(){
+        $('#programme_id').on('change', function() {
+	     $(this).closest('form').trigger('submit');
+	});
+
       var date_input=$('input[name="dob"]'); //our date input has the name "date"
       var container=$('.form-container form').length>0 ? $('.form-container form').parent() : "body";
       var options={

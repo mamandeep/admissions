@@ -46,6 +46,19 @@ class PreferencesTable extends Table
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 100],
                     'message' => 'Maximum marks should not be more than 25.',
+                ],
+                'allowZero' => [
+                    'rule' => function ($value, $context) {
+			//debug(bccomp($value, "0", 2));debug(strcmp($context['data']['testpaper_id'], "6")); 
+                        //Add a check here that if CUCET Score card has been uploaded.
+                        if((bccomp($value, "0", 2) !== 0) && (strcmp($context['data']['testpaper_id'], "6") === 0  || strcmp($context['data']['testpaper_id'], "44") === 0)) {
+                            return false;
+                        }
+			else {
+			    return true;
+			}
+                    },
+                    'message' => 'Please fill zero(0) in marks A and total marks in marks B if this field is not applicable.',
                 ]
             ])
             ->requirePresence('marks_B')
@@ -58,6 +71,19 @@ class PreferencesTable extends Table
                 'maxValue' => [
                     'rule' => ['comparison', '<=', 100],
                     'message' => 'Maximum marks should not be more than 75.',
+                ],
+                'allowZero' => [
+                    'rule' => function ($value, $context) {
+			//debug(bccomp($value, "0", 2));debug(strcmp($context['data']['testpaper_id'], "6")); 
+                        //Add a check here that if CUCET Score card has been uploaded.
+                        if(bccomp($value, "0", 2) === 0 && (strcmp($context['data']['testpaper_id'], "6") === 0  || strcmp($context['data']['testpaper_id'], "44") === 0)) {
+                            return false;
+                        }
+                        else {
+			    return true;
+			}
+                    },
+                    'message' => 'Please fill zero(0) in marks A and total marks in marks B.',
                 ]
             ])
             ->requirePresence('marks_total')
@@ -75,25 +101,45 @@ class PreferencesTable extends Table
                     'rule' => function ($value, $context){
                         $marks_A = $context['data']['marks_A'];
                         $marks_B = $context['data']['marks_B'];
+			$total = bcadd($marks_A, $marks_B, 2);
                         //debug($value); debug($marks_A); debug($marks_B);
                         //debug(intval($marks_A) + intval($marks_B));
-                        return (intval($value) === (intval($marks_A) + intval($marks_B))) ? true : false;
+                        if(strcmp($context['data']['testpaper_id'], "6") === 0  || strcmp($context['data']['testpaper_id'], "44") === 0) {
+                            return true;
+                        }
+                        return (bccomp($value, $total, 2) === 0) ? true : false;
                     },
                     'message' => 'Sum of Marks A and Marks B does not match.'
                 ],
                 'validatecucet' => [
-                    'rule' => function ($value, $context) use ($cucetdata, $scorecardUploaded) {
+                    'rule' => function ($value, $context) use ($cucetdata, $scorecardUploaded, $session) {
                         //Add a check here that if CUCET Score card has been uploaded.
+                        /*if(strcmp($context['data']['testpaper_id'], "6") === 0  || strcmp($context['data']['testpaper_id'], "44") === 0) {
+                            $this->verified[$context['data']['id']] = 0;
+                            return $scorecardUploaded;
+                        }*/
                         $matched = false;
+			//debug($cucetdata); debug($context); debug($scorecardUploaded); 
                         foreach($cucetdata as $cucet) {
                             if($cucet['testpaper_id'] === $context['data']['testpaper_id']) {
-                                $matched = ($context['data']['marks_A'] === $cucet['cucet_marks_A']) ? (($context['data']['marks_B'] === $cucet['cucet_marks_B']) ? true : false) : false;
+				//debug($context['data']['marks_A']);debug($cucet['cucet_marks_A']);
+				//debug(bccomp($context['data']['marks_A'], $cucet['cucet_marks_A'], 2));
+//debug(strcmp($context['data']['testpaper_id'], "6")); 
+				if(strcmp($context['data']['testpaper_id'], "6") === 0  || strcmp($context['data']['testpaper_id'], "44") === 0) {
+                            $this->verified[$context['data']['id']] = 0;
+			    $matched = (bccomp($context['data']['marks_A'], "0", 2) === 0) ? ((bccomp($context['data']['marks_B'], $cucet['cucet_total_marks'], 2) === 0) ? true : false) : false;  //debug($matched);
+                        }
+			else {
+                                $matched = (bccomp($context['data']['marks_A'], $cucet['cucet_marks_A'], 2) === 0) ? ((bccomp($context['data']['marks_B'], $cucet['cucet_marks_B'], 2) === 0) ? true : false) : false;
+                                $this->verified[$context['data']['id']] = ($matched === true) ? 1 : 0;
+}
                             }
                         }
-                        $this->verified[$context['data']['id']] = ($matched === true) ? 1 : 0;
-                        return ($matched === false)  ? $scorecardUploaded : true;
+			$return  = ($matched === false) ? $scorecardUploaded : true;
+			($matched === false && $scorecardUploaded === false) ? ($session->write('isUploadRequired', true)) : ($session->write('isUploadRequired', false));
+                        return $return;
                     },
-                    'message' => 'The data entered does not match with CUCET (Test Paper Code, Marks A, Marks B). Please correct the data or upload CUCET Score Card.'
+                    'message' => 'The data entered does not match with CUCET (Test Paper Code, Marks A, Marks B). Please correct the data or upload CUCET Score Card by clicking below.'
                 ]
             ])
             ->requirePresence('programme_id')

@@ -26,7 +26,7 @@ class RegistrationsTable extends Table
             ->add('username', [
                 'correct' => [
                     'rule' => function ($value, $context){
-                        $pattern = '/^PG16\d{6}$/';
+                        $pattern = '/^PG17[0-9]{6}$/';
                         //debug($value); debug(preg_match($pattern, $value));
                         if(preg_match($pattern, $value)) {
                             return true;

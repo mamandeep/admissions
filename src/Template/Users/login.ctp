@@ -1,10 +1,10 @@
 <?= $this->Flash->render() ?>
 <?= $this->Form->create($users); ?>
     <fieldset>
-        <legend><strong><?= __('Please enter your username and password') ?><strong></legend>
+        <legend><strong><?= __('Please enter your CUCET Applicant ID and password') ?><strong></legend>
          <table width="100%">
             <tr>
-                <td width="30%" class="form-label">Username (e.g. PGXXXXXXXX)</td>
+                <td width="30%" class="form-label">CUCET Applicant ID (e.g. PGXXXXXXXX)</td>
                 <td><?php echo $this->Form->control('username', ['label' => false]) ?></td>
             </tr>
             <tr>

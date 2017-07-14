@@ -71,23 +71,35 @@ class PaymentsController extends AppController {
     
     public function submitfee() {
         $flag = $this->isSubmitFeeOpen();
+        if($flag) {
+            $this->set('submitFeeOpen', true);
+        }
+        else {
+            $this->set('submitFeeOpen', false);
+        }
         $candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         
         //debug($candidate->toArray()); 
-        $candidateId = array_keys($candidate->toArray())[0];
+        $candidateId = (count($candidate->toArray()) > 0) ? array_keys($candidate->toArray())[0] : 0;
         $conn = ConnectionManager::get('default');
-        
         $query_string = 'select p1.id as p_id, p1.name as programme, c1.type as category
-                        from seatallocations s1
-                        inner join seats s2
-                        on s2.id = s1.seat_id
+                        from seats s2
                         inner join categories c1
                         on c1.id = s2.category_id
                         inner join programmes p1
                         on s2.programme_id = p1.id
-                        where s1.candidate_id = ' . $candidateId . ' 
-                        order by s1.created desc';
+                        where s2.candidate_id = ' . $candidateId . ' and s2.fee_id is not NULL;';
+        $stmt = $conn->execute($query_string);
+        $seatConfirmed = $stmt->fetchAll('assoc');
+
+        $query_string = 'select p1.id as p_id, p1.name as programme, c1.type as category
+                        from seats s2
+                        inner join categories c1
+                        on c1.id = s2.category_id
+                        inner join programmes p1
+                        on s2.programme_id = p1.id
+                        where s2.candidate_id = ' . $candidateId . ' and s2.fee_id is NULL;';
         $stmt = $conn->execute($query_string);
         $seatAlloted = $stmt->fetchAll('assoc');
         if($this->request->is(['post', 'put']) && $flag === true) {
@@ -113,14 +125,16 @@ class PaymentsController extends AppController {
             $seatAlloted = [];
         }
         $this->set('seatAlloted', $seatAlloted);
-        $query_string = 'select f1.response_code as response_code
+	$this->set('seatConfirmed', $seatConfirmed);
+        $query_string = 'select f1.response_code as response_code, p2.name as p_name, 
+			c2.type as s_category
                         from fees f1
-                        inner join seatallocations s1
-                        on s1.candidate_id = f1.candidate_id
                         inner join seats s2
-                        on s2.id = s1.seat_id
-                        where f1.candidate_id = ' . $candidateId . ' and s2.programme_id = ' . ((!empty($seatAlloted['p_id'])) ? intval($seatAlloted['p_id']) : 0) . '
-                        order by f1.created desc';
+                        on s2.candidate_id = f1.candidate_id and s2.candidate_id = ' . $candidateId . '
+			inner join programmes p2
+			on s2.programme_id = p2.id
+			inner join categories c2
+			on c2.id = s2.category_id;';
         
         $stmt = $conn->execute($query_string);
         $feePaid = $stmt->fetchAll('assoc');
@@ -128,9 +142,11 @@ class PaymentsController extends AppController {
         $session->write('programme_id_for_fee', (!empty($seatAlloted['p_id']) ? $seatAlloted['p_id'] : 0));
         $this->set('token', $token);
         $this->set('feePaid', ((count($feePaid) > 0) ? ((intval($feePaid[0]['response_code']) === 0) ? true : false) : false));
+	$this->set('feesPaidFor', $feePaid);
     }
     
     public function pay() {
+        
         $session = $this->request->session();
         $programe_id = intval($session->read('programme_id_for_fee'));
         //debug($programe_id);
@@ -209,8 +225,17 @@ class PaymentsController extends AppController {
 
                 if(!empty($_POST['SecureHash']) && $secureHash == $_POST['SecureHash']){
 
-                    if($_POST['ResponseCode'] == 0) {
-                            // update response and the order's payment status as SUCCESS in to database
+                    if($_POST['ResponseCode'] == 0 && intval($this->Auth->user('id')) > 0) {
+                            // update response and the order's payment status as SUCCESS in to database		    
+			    $usersTable = TableRegistry::get('Users');
+			    $user = $usersTable->find('all', ['conditions' => ['Users.id' => $this->Auth->user('id')]])->toArray();
+			    $user = $user[0];
+                            $candidatesTable = TableRegistry::get('Candidates');
+                            $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
+
+                            //debug($candidate->toArray()); 
+                            $candidateId = array_keys($candidate->toArray())[0];
+                            
                             $seatsTable = TableRegistry::get('Seats');
                             $feesTable = TableRegistry::get('Fees');
                             $fee = '';
@@ -218,20 +243,12 @@ class PaymentsController extends AppController {
                             $conn = ConnectionManager::get('default');
                             $conn->begin();
                             $saved = true;
-                            $query_string = 'select u1.id as user_id, c1.id as candidate_id, s1.seat_id as seat_id  
-                                            from candidates c1
-                                            inner join seatallocations s1
-                                            on s1.candidate_id = c1.id
-                                            inner join users u1
-                                            on u1.id = c1.user_id
-                                            where u1.id = ' . $this->Auth->user('id') . '
-                                            order by s1.created desc';
+                            $query_string = 'select s1.id as seat_id from seats s1
+                                            where s1.candidate_id = ' . $candidateId . ' and s1.fee_id is NULL;';
                             $stmt = $conn->execute($query_string);
                             $seatAllocated = $stmt->fetchAll('assoc');
-                            $candidate_id = 0;
                             if(count($seatAllocated) >= 1) {
-                                $candidate_id = $seatAllocated[0]['candidate_id'];
-                                $seat = $seatsTable->find('all', ['conditions' => ['Seats.id' => $seatAllocated[0]['seat_id']]])->toArray()[0];
+                                $seat = $seatsTable->find('all', ['conditions' => ['Seats.candidate_id' => $candidateId, 'Seats.fee_id is ' => NULL]])->toArray()[0];
                                 $fee = $feesTable->newEntity(['response_code' => $_POST['ResponseCode'],
                                                         'payment_date_created' => $_POST['DateCreated'],
                                                         'payment_id' => $_POST['PaymentID'],
@@ -243,7 +260,7 @@ class PaymentsController extends AppController {
                                                         'payment_amount' => '9000',
                                                         'payment_transaction_id' => '159653335']);*/
                                 $fee->user_id = $this->Auth->user('id');
-                                $fee->candidate_id = $candidate_id;
+                                $fee->candidate_id = $candidateId;
                             }
                             else {
                                 $this->Flash->error(__('The seat allocated details are mismatched. Please contact support.'));
@@ -254,12 +271,16 @@ class PaymentsController extends AppController {
                                 $saved = false;
                             }
                             if($saved) {
-                                $seat->candidate_id = $candidate_id;
                                 $seat->fee_id = $result->id;
                             }
                             if(!($result = $seatsTable->save($seat))) {
                                 $saved = false;
                             }
+		            else {
+				if($this->is_connected()) {
+					$response = $this->smsSend($user['mobile'], 'Dear '.$user['name'].'! Your fee has been successfully received. Payment ID:'. $_POST['PaymentID']);
+				 }
+			    }
                             if ($saved) {
                                 $conn->commit();
                                 $_POST['paymentStatus'] = 'SUCCESS';
@@ -315,71 +336,115 @@ class PaymentsController extends AppController {
     }
     
     public function cancelseat() {
-        $flag = $this->isSubmitFeeOpen();
-        $candidatesTable = TableRegistry::get('Candidates');
+	$conn = ConnectionManager::get('default');
+	$candidatesTable = TableRegistry::get('Candidates');
         $candidate = $candidatesTable->find('list')->where(['Candidates.user_id' => $this->Auth->user('id')]);
         
         $candidateId = array_keys($candidate->toArray())[0];
-        $conn = ConnectionManager::get('default');
-        $saved = true;
-        $cancelseatsTable = TableRegistry::get('Cancelseats');
-        $cancelseat = $cancelseatsTable->find('all')->where(['Cancelseats.user_id' => $this->Auth->user('id')])->toArray();
-        $cancelseat = ((count($cancelseat) > 0) ? $cancelseat[0] : $cancelseatsTable->newEntity());
-        if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
-            $conn->begin();
-            //debug($this->request->data());
-            $cancelseat = $cancelseatsTable->patchEntity($cancelseat, $this->request->data());
-            $cancelseat->user_id = $this->Auth->user('id');
-            $cancelseat->candidate_id = $candidateId;
-            //debug($cancelseat);
-            if(!$cancelseatsTable->save($cancelseat)) {
-                $saved = false;
-            }
-            
-             if ($saved) {
-                $conn->commit();
-                $this->Flash->success(__('Your cancellation request has been successfully received.'));
-            } else {
-                $conn->rollback();
-                $this->Flash->error(__('There was an error in cancellation request of the seat. Please contact support.'));
-            }
-            
-        }
-        else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
-            $this->Flash->error(__('Cancellation of seat is closed at this time.'));
-        }
+
+	$query_string = 'select s1.id as seat_id, s1.programme_id as p_id, p1.name as p_name  
+			from seats s1 
+			inner join programmes p1
+			on s1.programme_id = p1.id 
+                        where s1.candidate_id = ' . $candidateId . ' and s1.fee_id is not NULL;';
+        $stmt = $conn->execute($query_string);
+        $programmmes_alloted = $stmt->fetchAll('assoc');
+	$programmesTable = \Cake\ORM\TableRegistry::get('Programmes');
+	$programme = $programmesTable->newEntity();
+        $programme_id = 0;
+        $userData = [];
         
-        $query_string = 'select u1.username as applicant_id, c1.name as c_name, c1.f_name as f_name,
+        $saved = true;
+	$cancelseatsTable = TableRegistry::get('Cancelseats');
+        $cancelseats = $cancelseatsTable->find('all')->where(['Cancelseats.user_id' => $this->Auth->user('id')])->toArray();
+        $seatsTable = TableRegistry::get('Seats');
+	$cancelseat = $cancelseatsTable->newEntity();
+	$this->set('seatCancelledAlready', false);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+		debug($this->request->data());
+	    $programme_id = (!empty($this->request->data()['pid']) && is_numeric($this->request->data()['pid'])) ? intval($this->request->data()['pid']) : 0;
+            if($programme_id === 0) {
+                $this->Flash->error(__('The programme selected is not a valid programme.'));
+                return $this->redirect(['action' => 'cancelseat']);
+            }
+	    $programme = $programmesTable->find('all')
+                                         ->where(['Programmes.id' => $programme_id])->toArray();
+	    //debug($programme);
+	    if(count($programme) === 0) {
+		$this->Flash->error(__('The programme selected is not a valid programme.'));
+		return $this->redirect(['action' => 'cancelseat']);
+	    }
+	    $programme = $programme[0];
+	    $seatCancelledAlready = false;
+	    foreach($cancelseats as $cseat) {
+                $seat = $seatsTable->find('all', ['conditions' => ['Seats.id' => $cseat['seat_id']]])->toArray()[0];
+		if($seat['programme_id'] === $programme_id) {
+		      $seatCancelledAlready = true;
+		      $this->set('seatCancelledAlready', true);
+		      $cancelseat = $cseat;
+		}
+	    }
+	    if($seatCancelledAlready === false && !empty($this->request->data('ac_number'))) {
+		    $conn->begin();
+		    //debug($this->request->data());
+		    $cancelseat = $cancelseatsTable->patchEntity($cancelseat, $this->request->data());
+		    $cancelseat->user_id = $this->Auth->user('id');
+		    $cancelseat->candidate_id = $candidateId;
+		    //debug($cancelseat);
+		    if(!$cancelseatsTable->save($cancelseat)) {
+			$saved = false;
+		    }
+		    
+		    if ($saved) {
+			$conn->commit();
+			$this->Flash->success(__('Your cancellation request has been successfully received.'));
+		    } else {
+			$conn->rollback();
+			$this->Flash->error(__('There was an error in cancellation request of the seat. Please correct the field below or contact support.'));
+            	   }
+	    }
+	    else if($seatCancelledAlready === true && !empty($this->request->data('ac_number'))) {
+		$this->Flash->error(__('The request for seat cancellation has already been submitted for this programme.'));
+	    }
+	    $query_string = 'select u1.username as applicant_id, c1.name as c_name, c1.f_name as f_name,
                         u1.email as email, u1.mobile as mobile, p1.name as p_name, c2.type as category,
                         f1.payment_id as bank_payment_id, f1.payment_date_created as fee_submit_date,
-                        f1.payment_amount as amount, f1.id as fee_id
+                        f1.payment_amount as amount, f1.id as fee_id, s1.id as seat_id
                         from candidates c1
                         inner join users u1
-                        on c1.user_id = u1.id
+                        on c1.user_id = u1.id and c1.id = ' . $candidateId . '
                         inner join seats s1
-                        on s1.candidate_id = c1.id
+                        on s1.candidate_id = c1.id and s1.fee_id is not NULL and s1.programme_id = ' . $programme_id . ' 
                         inner join fees f1
-                        on f1.candidate_id = c1.id
+                        on f1.candidate_id = c1.id and f1.id = s1.fee_id
                         inner join programmes p1
                         on p1.id = s1.programme_id
                         inner join categories c2
                         on c2.id = s1.category_id
                         where u1.id = ' . $this->Auth->user('id') . '
                         group by c1.id, f1.payment_id';
-        $stmt = $conn->execute($query_string);
-        $userData = $stmt->fetchAll('assoc');
+		$stmt = $conn->execute($query_string);
+		$userData = $stmt->fetchAll('assoc');
+            
+            
+        }
+        
+	
+        
         if(count($userData) === 1) {
-            $userData = $userData[0];
+            $userData = $userData[0];	    
+	    $this->set('cancelseat', $cancelseat);
+	    $this->set('userData', $userData);
         }
-        else {
-            $this->Flash->error(__('The information related to cancellation of seat is not correct. Please contact support.'));
-            return $this->redirect(['action' => 'submitfee']);
-        }
-        $this->set('cancelseat', $cancelseat);
-        $this->set('userData', $userData);
+	$this->set('programme', $programme);
+	$this->set('programmes_alloted', $programmmes_alloted);
     }
     
     public function isAuthorized($user = null) {
+	//return parent::isAuthorized($user);
+        if(parent::isAuthorized($user)) {
+		return true;
+	}
         if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'index' || $this->request->getParam('action') === 'submitfee'
                 || $this->request->getParam('action') === 'pay' || $this->request->getParam('action') === 'post'
                 || $this->request->getParam('action') === 'returnpg' || $this->request->getParam('action') === 'cancelseat')) {
@@ -398,7 +463,5 @@ class PaymentsController extends AppController {
                 return true;
             }
         }
-
-        return parent::isAuthorized($user);
     }
 }

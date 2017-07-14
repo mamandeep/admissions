@@ -36,7 +36,6 @@ td {
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
-<th>Part A Marks</th>
 <th>Part B Marks</th>
 <th>Total Marks</th>
 </tr>
@@ -46,7 +45,6 @@ td {
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['marks_A'] ?></td>
     <td><?= $candidate['marks_B'] ?></td>
     <td><?= $candidate['total_marks'] ?></td>
 </tr>
@@ -59,7 +57,6 @@ td {
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
-<th>Part A Marks</th>
 <th>Part B Marks</th>
 <th>Total Marks</th>
 </tr>
@@ -69,7 +66,6 @@ td {
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['marks_A'] ?></td>
     <td><?= $candidate['marks_B'] ?></td>
     <td><?= $candidate['total_marks'] ?></td>
 </tr>
@@ -82,7 +78,6 @@ td {
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
-<th>Part A Marks</th>
 <th>Part B Marks</th>
 <th>Total Marks</th>
 </tr>
@@ -92,7 +87,6 @@ td {
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['marks_A'] ?></td>
     <td><?= $candidate['marks_B'] ?></td>
     <td><?= $candidate['total_marks'] ?></td>
 </tr>
@@ -105,7 +99,6 @@ td {
 <th>CUCET Roll Number</th>
 <th>Name of the Candidate</th>
 <th>Candidate Category</th>
-<th>Part A Marks</th>
 <th>Part B Marks</th>
 <th>Total Marks</th>
 </tr>
@@ -115,7 +108,6 @@ td {
     <td><?= $candidate['rollno'] ?></td>
     <td><?= $candidate['c_name'] ?></td>
     <td><?= $candidate['c_category'] ?></td>
-    <td><?= $candidate['marks_A'] ?></td>
     <td><?= $candidate['marks_B'] ?></td>
     <td><?= $candidate['total_marks'] ?></td>
 </tr>

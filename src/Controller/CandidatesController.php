@@ -61,7 +61,7 @@ class CandidatesController extends AppController {
             $candidate->user_id = $this->Auth->user('id');
             if ($this->Candidates->save($candidate)) {
                 $this->Flash->success(__('Your application form has been saved.'));
-                return $this->redirect(['action' => 'add']);
+                return $this->redirect(['controller' => 'preferences', 'action' => 'add']);
             }
             $this->Flash->error(__('Unable to save your application form.'));
         }
@@ -143,6 +143,7 @@ class CandidatesController extends AppController {
     
 
     public function isAuthorized($user = null) {
+	//return parent::isAuthorized($user);
         // All users with role as 'exam' can add seats seatalloted
         if (isset($user['role']) && $user['role'] === 'student' && ($this->request->getParam('action') === 'add' 
                 || $this->request->getParam('action') === 'index' || $this->request->getParam('action') === 'seatalloted')) {
@@ -157,7 +158,7 @@ class CandidatesController extends AppController {
             }
         }
 
-        return parent::isAuthorized($user);
+        
     }
 
 }

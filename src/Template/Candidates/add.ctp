@@ -41,6 +41,10 @@
         <td class="form-label">Aadhar Number (xxxx xxxx xxxx)</td>
         <td><?php echo $this->Form->control('aadhar_no', ['label' => false, 'maxlength'=>'100']); ?></td>
     </tr>
+	<tr>
+        <td colspan="1" class="form-label">Hostel Accomodation required?</td>
+        <td colspan="3"><?php echo $this->Form->control('hostel_acco', ['label' => false, 'empty' => ['select' => 'Select'],  'options' => ['yes' => 'Yes', 'no' => 'No'], 'type' => 'select' , 'id' => "id_hostelacco", 'maxlength'=>'100']); ?></td>
+    </tr>
     <tr>
         <td colspan="4"><label>Details of Qualifying Examination: </label></td>
     </tr>
@@ -99,7 +103,13 @@
         </td>
     </tr>
     <tr>
-        <td colspan="4" align="center"><?php echo $this->Form->button(__('Submit')); ?></td>
+        <td colspan="3" align="center"><?php echo $this->Form->button(__('Save')); ?></td>
+	<td><?php echo $this->Html->link(
+		    'Next',
+		    '/preferences/add',
+		    ['class' => 'button btn btn-success']
+	    ); ?>
+	</td>
     </tr>
 </table>
 

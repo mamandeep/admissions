@@ -94,17 +94,17 @@ if (file_exists($file)) {
     <?php if(isset($user) && !empty($user['id']) && $user['role'] === 'student') { ?>
         <li class="treeview active">
             <a href="#">
-                <i class="fa fa-edit"></i> <span>Counselling</span>
+                <i class="fa fa-edit"></i> <span>Forms</span>
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
             <ul class="treeview-menu">
-		<li><a href="<?php echo $this->Url->build('/candidates/add/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Application Form</a></li>
+                <li><a href="<?php echo $this->Url->build('/candidates/add/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Application Form</a></li>
+                <!--<li><a href="<?php echo $this->Url->build('/uploadfiles/index/' . $user['id']); ?>"><i class="fa fa-circle-o"></i>Upload Scorecard (Not Compulsory)</a></li>-->
                 <li><a href="<?php echo $this->Url->build('/preferences/add/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Add Preference</a></li>
-		<?php /*
-                <li><a href="<?php echo $this->Url->build('/seats/viewposition/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> View Position</a></li> 
-		<li><a href="<?php echo $this->Url->build('/seats/lockseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Lock Seat</a></li> 
-		<li><a href="<?php echo $this->Url->build('/payments/submitfee/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Submit Fee</a></li> */ ?>
-		<li><a href="<?php echo $this->Url->build('/payments/cancelseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Cancel Seat</a></li>
+                <li><a href="<?php echo $this->Url->build('/seats/viewposition/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> View Position</a></li>
+                <li><a href="<?php echo $this->Url->build('/seats/lockseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Lock Seat</a></li>
+                <li><a href="<?php echo $this->Url->build('/payments/submitfee/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Submit Fee</a></li>
+                <!--<li><a href="<?php echo $this->Url->build('/payments/cancelseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Seat Cancellation</a></li>-->
             </ul>
         </li>
         <li class="treeview active">
@@ -128,12 +128,10 @@ if (file_exists($file)) {
             </a>
             <ul class="treeview-menu">
                 <li><a href="<?php echo $this->Url->build('/seats/summary/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Summary</a></li>
-		<li><a href="<?php echo $this->Url->build('/seats/summaryfees/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Summary Fees</a></li>
                 <li><a href="<?php echo $this->Url->build('/seats/admissions/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Programmes</a></li>
                 <li><a href="<?php echo $this->Url->build('/seats/meritlist/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Merit List</a></li>
                 <li><a href="<?php echo $this->Url->build('/seats/allocateseats/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Seat Allocation</a></li>
                 <li><a href="<?php echo $this->Url->build('/seats/printseats/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Print Allocated Seats</a></li>
-		<li><a href="<?php echo $this->Url->build('/payments/cancelseat/' . $user['id']); ?>"><i class="fa fa-circle-o"></i> Cancel Seat</a></li>
             </ul>
         </li>
         <li class="treeview active">

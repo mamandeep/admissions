@@ -40,7 +40,7 @@
         </tr>
 		<tr>
 		  <!--<td class="fieldName"><span class="error">*</span> Description</td>-->
-		  <td align="left"><input name="description" type="hidden" value="Online Application Form (Non_Teaching)" /></td>
+		  <td align="left"><input name="description" type="hidden" value="PG Admission 2017" /></td>
 	   </tr>
 		<tr>
 		  <!--<td class="fieldName"><span class="error">*</span> Return Url</td>-->

@@ -22,29 +22,40 @@ td {
 }
 </style>
 <a href="javascript: window.print();" > PRINT </a>
-<h1>Allocated Seats Details</h1>
-<table>
+<?php  $count2 = 1; $count3 = 0;
+        for( $count3 = 0; $count3 < count($seatallocations); $count3++) { ?>
+<?php if($count3 === 0 || $seatallocations[$count3-1]['p_name'] !== $seatallocations[$count3]['p_name']) { ?>
+<div align="center" style="font-size: 16px; font-weight: bold; padding-top: 20px; padding-bottom: 3px"><?= $seatallocations[$count3]['p_name'] ?></div>
+<table width="100%">
     <tr>
-        <th>Sr. No.</th>
-        <th>Centre ID</th>
-        <th>Seat ID</th>
-        <th>Candidate ID</th>
+        <th width="10%">Sr. No.</th>
+	<th width="20%">CUCET Applicant ID</th>
+        <th width="30%">Name</th>
+        <th width="10%">Total Marks</th>
+	<th width="15%">Candidate Category</th>
+	<th width="15%">Seat Category</th>
     </tr>
-     <?php  $count = 1;
-        foreach ($seatallocations as $seat): ?>
+<?php } ?>     
     <tr>
         <td>
-            <?= $count++; ?>
+            <?= $count2++ ?>
         </td>
         <td>
-            <?= $seat['centre_id'] ?>
-        </td>
-        <td><?php //debug($seat); ?>
-            <?= $seat['seat_id'] ?>
+            <?= $seatallocations[$count3]['username'] ?>
         </td>
         <td>
-            <?= $seat['candidate_id'] ?>
+            <?= $seatallocations[$count3]['c_name'] ?>
+        </td>
+	<td>
+            <?= $seatallocations[$count3]['marks_total'] ?>
+        </td>
+        <td>
+            <?= $seatallocations[$count3]['c_category'] ?>
+        </td>
+        <td>
+            <?= $seatallocations[$count3]['s_category'] ?>
         </td>
     <tr>
-    <?php endforeach; ?>
-<table>
+<?php if($count3 === (count($seatallocations) - 1) || $seatallocations[$count3]['p_name'] !== $seatallocations[$count3+1]['p_name']) { $count2 = 1; ?>
+</table>
+<?php } } ?>

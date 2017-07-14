@@ -44,9 +44,6 @@ td {
 <div>Please note that above information is for information only and to assist you in making an informed decision. Seats will be offered based on the merit list to be prepared out of the choices locked by the candidates in each round. Candidates of M-Tech CST may please note that above position is likely to change after verification of GATE scores.</div>
 <label>> Each candidate can <span style="text-decoration: underline;">Lock only One Programme</span> in each round and his/her name will not be considered in other programmes in merit lists of that round. In the next round, she/he can again lock same/different preference and so on.</label>
 <div>
-<ul>
-<li><strong style="color: red;">Before locking your preference please <a href="<?php echo $this->request->webroot . 'files/Tentative Vacant Seats as on 21062017 F.pdf'; ?>">click here</a> to view the tentative list of vacant seats</strong></li>
-</ul>
     <p style="font-weight: bold; color: green;">The currently locked programme is:  
     <?php         $str = '';
         $seatLocked = false; 

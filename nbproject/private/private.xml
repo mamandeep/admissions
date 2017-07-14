@@ -3,44 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Layout/default.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/prelogin.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/UsersTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/User.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Uploadfile.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/config/bootstrap.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/RegistrationsTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/webroot/css/AdminLTE.min.css</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/RegistrationsController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/login.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Preferences/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Layout/default.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Candidates/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/PreferencesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/nav-top.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Registrations/add.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside/form.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/View/AppView.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/AppController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/Form/Form.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/UsersController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Controller/CandidatesController.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Layout/register.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Registration.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Table/CandidatesTable.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/View/Helper/FormHelper.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/webroot/css/opensans.css</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside/user-panel.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Users/index.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/config/routes.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/webroot/css/skins/skin-blue.css</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside-control-sidebar.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Template/Seats/meritlist.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/cakephp/cakephp/src/View/Helper/FormHelper.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside-main-sidebar.ctp</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Preference.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/src/Model/Entity/Candidate.php</file>
-            <file>file:/C:/xampp/htdocs/admissions/vendor/maiconpinto/cakephp-adminlte-theme/src/Template/Element/aside/sidebar-menu.ctp</file>
+            <file>file:/C:/xampp/htdocs/admissions/src/Controller/SeatsController.php</file>
         </group>
     </open-files>
 </project-private>

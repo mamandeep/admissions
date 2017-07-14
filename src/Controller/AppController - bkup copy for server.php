@@ -73,8 +73,8 @@ class AppController extends Controller
                 'home'
             ],
             'unauthorizedRedirect' => [
-                'controller' => 'users',
-                'action' => 'prelogin',
+                'controller' => 'candidates',
+                'action' => 'index',
                 'prefix' => false
             ],
             'authError' => 'You must be authorized to view this page.',
@@ -118,10 +118,6 @@ class AppController extends Controller
     {
         // Admin can access every action
         if (isset($user['role']) && $user['role'] === 'admin') {
-            return true;
-        }
-
-	if (isset($user['role']) && $user['role'] === 'exam') {
             return true;
         }
 
@@ -192,8 +188,8 @@ class AppController extends Controller
     protected function isFormFillingOpen() {
         $current_datetime = new DateTime();
         $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
-        $open_datetime = new DateTime("2017-07-03 08:59:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-07-07 23:59:59", new DateTimeZone('Asia/Calcutta'));
+        $open_datetime = new DateTime("2017-06-01 08:59:59", new DateTimeZone('Asia/Calcutta'));
+        $close_datetime = new DateTime("2017-06-17 08:59:59", new DateTimeZone('Asia/Calcutta'));
         if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
             return true;
         }
@@ -205,21 +201,8 @@ class AppController extends Controller
     protected function isPreferenceFillingOpen() {
         $current_datetime = new DateTime();
         $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
-        $open_datetime = new DateTime("2017-07-03 08:59:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-07-07 23:59:59", new DateTimeZone('Asia/Calcutta'));
-        if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    
-    protected function isViewSeatOpen() {
-        $current_datetime = new DateTime();
-        $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
-        $open_datetime = new DateTime("2017-06-18 05:59:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-06-19 14:59:59", new DateTimeZone('Asia/Calcutta'));
+        $open_datetime = new DateTime("2017-06-09 11:59:59", new DateTimeZone('Asia/Calcutta'));
+        $close_datetime = new DateTime("2017-06-17 08:59:59", new DateTimeZone('Asia/Calcutta'));
         if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
             return true;
         }
@@ -231,8 +214,8 @@ class AppController extends Controller
     protected function isLockingSeatOpen() {
         $current_datetime = new DateTime();
         $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
-        $open_datetime = new DateTime("2017-06-29 05:59:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-06-29 14:59:59", new DateTimeZone('Asia/Calcutta'));
+        $open_datetime = new DateTime("2017-06-19 05:59:59", new DateTimeZone('Asia/Calcutta'));
+        $close_datetime = new DateTime("2017-06-19 14:59:59", new DateTimeZone('Asia/Calcutta'));
         if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
             return true;
         }
@@ -244,8 +227,8 @@ class AppController extends Controller
     protected function isSubmitFeeOpen() {
         $current_datetime = new DateTime();
         $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
-        $open_datetime = new DateTime("2017-06-30 09:29:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-07-01 15:59:59", new DateTimeZone('Asia/Calcutta'));
+        $open_datetime = new DateTime("2017-06-20 08:59:59", new DateTimeZone('Asia/Calcutta'));
+        $close_datetime = new DateTime("2017-06-21 15:59:59", new DateTimeZone('Asia/Calcutta'));
         if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
             return true;
         }

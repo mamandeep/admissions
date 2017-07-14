@@ -90,6 +90,14 @@ class CandidatesTable extends Table
                     'message' => 'Please select appropriate value.',
                 ]
             ])
+			->requirePresence('hostel_acco')
+            ->notEmpty('hostel_acco', 'Please fill this field')
+            ->add('hostel_acco', [
+                'validFormat' => [
+                    'rule' => array('custom', '/^yes|no$/i'),
+                    'message' => 'Please select Yes/No value.',
+                ]
+            ])
             ->requirePresence('ward_of_def')
             ->notEmpty('ward_of_def', 'Please fill this field')
             ->add('ward_of_def', [

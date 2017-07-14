@@ -1,6 +1,29 @@
 <label style="text-align: center;">Welcome to the CUPB Online Counselling Portal for PG Admissions - 2017</label>
-<p><i>A gateway for admission to various programmes offered by the Central University of Punjab, Bathinda during the Academic Session 2017-18.</i></p>
-<br/><br/>
+<br/>
+<br/>
+<ul>
+<li>
+<span style="color: red;">Hostel allotment is subject to availability</span>
+</li>
+</ul>
+<br/>
+<br/>
+<ul>
+<li><strong>Step 1:</strong> Click Register using your CUCET ID and other details. Note down the password created during Registration.
+</li>
+<li><strong>Step 2:</strong> Login using CUCET ID and password.
+</li>
+<li><strong>Step 3:</strong> Fill the Application Form and click Save.
+</li>
+<li><strong>Step 4:</strong> Under the Preference page, give option/preference for maximum 03 programmes.<br/>
+</li>
+<li><strong>Step 5:</strong> On 19th June, Lock any one preference out to the maximum three filled during Step 4.
+</li>
+<li><strong>Step 6:</strong> Programme wise merit list based on locked options will be prepared and seats will be offered for admission on 20th June. If offered seat, submit the fee within the stipulated time.<br/>
+Above steps will be repeated again on 22, 26 and 29th June. For detailed schedule of online counselling, please click here.
+</li>
+</ul>
+<br/>
 <label>Information for Prospective Candidates</label>
 <br/>
 All the Candidates who appeared in CUCET - 2017 examination held on 17-18 May, 2017 are eligible to participate in the online counselling after registration and submission of the Online Cousnelling Form for Admissions - 2017.

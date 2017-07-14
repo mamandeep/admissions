@@ -15,9 +15,17 @@ if (file_exists($file)) {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
     </a>
-
+    <?php if(!isset($user) || empty($user['id'])) { ?>
+    <?php echo $this->Html->link('Login', array('controller' => 'users',
+                                                                         'action' => 'login'), array('class' => 'btn btn-default btn-flat', 'style' => 'float: none;')); ?>
+    <?php echo $this->Html->link('Register', array('controller' => 'registrations',
+                                                                         'action' => 'add'), array('class' => 'btn btn-default btn-flat', 'style' => 'float: none;')); ?>
+    <?php echo $this->Html->link('Forgot Password', array('controller' => 'registrations',
+                                                                         'action' => 'forgotpasswd'), array('class' => 'btn btn-default btn-flat', 'style' => 'float: none;')); ?>
+    <?php } ?>
     <div class="navbar-custom-menu">
-        <ul class="nav navbar-nav"> <?php /* ?>
+        <ul class="nav navbar-nav"> 
+           <?php /* ?>
             <!-- Messages: style can be found in dropdown.less-->
             <li class="dropdown messages-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -63,15 +63,19 @@ class UsersController extends AppController
     }
 	
     public function login()
-    {
-        if ($this->request->is('post')) {
+    {	
+	$flag = true;
+	//$flag = $this->isViewSeatOpen();        
+	if ($this->request->is('post') && $flag === true) {
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
-                return $this->checkAndRedirect($user);
-            }
+                return $this->checkAndRedirect($user);            }
             $this->Flash->error(__('Invalid username or password, try again'));
         }
+	else if($this->request->is('post') && $flag === false) {
+		$this->Flash->error(__('Login is closed at this time.'));
+	}
         $user = $this->Users->newEntity();
         $this->set('users', $user);
     }
@@ -136,13 +140,15 @@ class UsersController extends AppController
     }
 
     public function isAuthorized($user = null) {
+	if(parent::isAuthorized($user)) {
+		return true;
+	}
         // All users with role as 'exam' can add seats
         if ($this->request->getParam('action') === 'login' || $this->request->getParam('action') === 'logout'
                 || $this->request->getParam('action') === 'prelogin') {
             return true;
         }
 
-        return parent::isAuthorized($user);
     }
     
 }

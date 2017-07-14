@@ -12,6 +12,6 @@ if (file_exists($file)) {
         <b>Version</b> 2.3.2
     </div>
     <strong>Copyright &copy; 2016-2017 <a href="http://cup.ac.in">Central University of Punjab</a>.</strong> All rights
-    reserved.
+    reserved. For technical queries please contact: onlineadmissionsquerycup@gmail.com
 </footer>
 <?php } ?>
